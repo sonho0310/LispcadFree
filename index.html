@@ -334,10 +334,10 @@
     </div>
 
     <!-- FOOTER -->
-    <footer class="fixed bottom-0 left-0 w-full z-40 bg-transparent pointer-events-none">
+    <footer class="fixed bottom-0 left-0 w-full z-40 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-t border-border-light dark:border-border-dark">
         <div
             class="max-w-[1400px] mx-auto px-6 py-4 flex justify-between items-center text-[10px] font-display font-bold uppercase tracking-widest text-slate-900 dark:text-slate-100">
-            <span id="txt-footer-platform" class="drop-shadow-md">NỀN TẢNG CHIA SẺ MIỄN PHÍ</span>
+            <span id="txt-footer-platform">NỀN TẢNG CHIA SẺ MIỄN PHÍ</span>
             <span class="text-slate-500 font-mono drop-shadow-md cursor-pointer hover:text-primary transition-colors pointer-events-auto" id="txt-footer-copy" onclick="openZaloPopup()">COPYRIGHT © 2026 by Son Ho ZALO 0364847376</span>
         </div>
     </footer>
@@ -394,7 +394,7 @@
 
             let filtered = allTools.filter(t => {
                 let matchCat = false;
-                if (currentCategory === 'all') matchCat = true;
+                if (currentCategory === 'all') matchCat = !t.category || !t.category.startsWith('revit_');
                 else if (currentCategory === 'revit_all') matchCat = t.category && t.category.startsWith('revit_');
                 else matchCat = t.category === currentCategory;
                 const matchSearch = String(t.title).toLowerCase().includes(search.toLowerCase()) || String(t.desc).toLowerCase().includes(search.toLowerCase());
@@ -403,7 +403,7 @@
 
             // Cập nhật số lượng
             const revitTools = allTools.filter(t => t.category && t.category.startsWith('revit_'));
-            document.getElementById('count-all').innerText = allTools.length;
+            document.getElementById('count-all').innerText = allTools.filter(t => !t.category || !t.category.startsWith('revit_')).length;
             document.getElementById('count-cad').innerText = allTools.filter(t => t.category === 'cad').length;
             document.getElementById('count-lisp').innerText = allTools.filter(t => t.category === 'lisp').length;
             document.getElementById('count-revit_all').innerText = revitTools.length;
