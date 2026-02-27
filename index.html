@@ -82,18 +82,21 @@
                     <div class="w-8 h-8 flex items-center justify-center bg-primary text-white font-bold hidden"
                         style="display: none;">CAD</div>
                     <div class="flex flex-col leading-none">
-                        <span class="font-display font-bold tracking-tighter text-xl uppercase">Túi thần kì Doremon</span>
-                        <span class="text-[9px] font-mono tracking-[0.2em] text-primary font-bold">Make life more beautiful</span>
+                        <span class="font-display font-bold tracking-tighter text-xl uppercase">Túi thần kì
+                            Doremon</span>
+                        <span class="text-[9px] font-mono tracking-[0.2em] text-primary font-bold">Make life more
+                            beautiful</span>
                     </div>
                 </div>
             </div>
             <div class="flex items-center gap-6">
-                
+
                 <button class="p-2 text-slate-400 hover:text-primary transition-colors" onclick="toggleDarkMode()">
                     <span class="material-symbols-outlined text-xl">contrast</span>
                 </button>
-                <button onclick="showSubmissionForm()"
-                    id="btn-submit-tool" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2 text-[11px] font-display font-bold uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 dark:hover:text-slate-900 transition-all shadow-sm">THÊM TOOL</button>
+                <button onclick="showSubmissionForm()" id="btn-submit-tool"
+                    class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2 text-[11px] font-display font-bold uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 dark:hover:text-slate-900 transition-all shadow-sm">THÊM
+                    TOOL</button>
             </div>
         </div>
     </header>
@@ -106,7 +109,8 @@
             <div class="sticky top-24 pb-8">
                 <h2
                     class="font-display text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 mb-6 flex items-center gap-2">
-                    <span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span>Autocad</h2>
+                    <span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span>Autocad
+                </h2>
                 <nav class="space-y-2" id="category-nav">
                     <a href="#" onclick="filterByCategory('all', this)"
                         class="category-link flex items-center justify-between px-4 py-3 bg-slate-200 dark:bg-slate-800 border-r-4 border-slate-400 group transition-all mb-4">
@@ -132,7 +136,8 @@
                             <span
                                 class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">code</span>
                             <span
-                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Layer - Polyline </span>
+                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Layer
+                                - Polyline </span>
                         </div>
                         <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-lisp">0</span>
                     </a>
@@ -145,29 +150,41 @@
                     <a href="#" onclick="filterByCategory('revit_all', this)"
                         class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
                         <div class="flex items-center gap-4">
-                            <span class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">domain</span>
-                            <span class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Tất Cả Revit</span>
+                            <span
+                                class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">domain</span>
+                            <span
+                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Tất
+                                Cả Revit</span>
                         </div>
-                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-revit_all">0</span>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white"
+                            id="count-revit_all">0</span>
                     </a>
                     <a href="#" onclick="filterByCategory('revit_addin', this)"
                         class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
                         <div class="flex items-center gap-4">
-                            <span class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">extension</span>
-                            <span class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Revit Addin</span>
+                            <span
+                                class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">extension</span>
+                            <span
+                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Revit
+                                Addin</span>
                         </div>
-                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-revit_addin">0</span>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white"
+                            id="count-revit_addin">0</span>
                     </a>
                     <a href="#" onclick="filterByCategory('revit_dynamo', this)"
                         class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
                         <div class="flex items-center gap-4">
-                            <span class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">account_tree</span>
-                            <span class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Revit Dynamo</span>
+                            <span
+                                class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">account_tree</span>
+                            <span
+                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Revit
+                                Dynamo</span>
                         </div>
-                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-revit_dynamo">0</span>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white"
+                            id="count-revit_dynamo">0</span>
                     </a>
                 </nav>
-</div>
+            </div>
         </aside>
 
         <!-- Content List -->
@@ -206,12 +223,14 @@
                 <span
                     class="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
                 <span
-                    class="text-[10px] font-display font-bold uppercase tracking-[0.2em] text-slate-900 dark:text-slate-100">Quay Về Thư Viện</span>
+                    class="text-[10px] font-display font-bold uppercase tracking-[0.2em] text-slate-900 dark:text-slate-100">Quay
+                    Về Thư Viện</span>
             </div>
         </div>
         <header class="mb-12">
             <h1 class="text-4xl font-display font-bold tracking-tight mb-2 uppercase">Đăng Công Cụ Mới</h1>
-            <p class="text-slate-500 dark:text-slate-400 font-display text-sm">Chia sẻ mã lisp của bạn lên thư viện công cộng.</p>
+            <p class="text-slate-500 dark:text-slate-400 font-display text-sm">Chia sẻ mã lisp của bạn lên thư viện công
+                cộng.</p>
         </header>
 
         <form id="addToolForm" class="space-y-8">
@@ -227,14 +246,16 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
                         <label
-                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Tên Công Cụ *</label>
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Tên
+                            Công Cụ *</label>
                         <input required id="toolTitle"
                             class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
                             placeholder="VD: TL - Tổng chiều dài" type="text" />
                     </div>
                     <div class="space-y-2">
                         <label
-                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Danh Mục</label>
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Danh
+                            Mục</label>
                         <select id="toolCategory"
                             class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary">
                             <optgroup label="AutoCAD">
@@ -249,14 +270,16 @@
                     </div>
                     <div class="md:col-span-2 space-y-2">
                         <label
-                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Mô tả kỹ thuật *</label>
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Mô
+                            tả kỹ thuật *</label>
                         <textarea required id="toolDesc"
                             class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary resize-none"
                             placeholder="Mô tả chi tiết những gì lisp này thực hiện..." rows="2"></textarea>
                     </div>
                     <div class="md:col-span-2 space-y-2">
                         <label
-                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Hướng dẫn sử dụng</label>
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Hướng
+                            dẫn sử dụng</label>
                         <textarea id="toolGuide"
                             class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary resize-none"
                             placeholder="Lệnh chạy, phím tắt, ghi chú cách dùng..." rows="2"></textarea>
@@ -271,7 +294,8 @@
                 <div class="flex items-center justify-between mb-8">
                     <div class="flex items-center gap-3">
                         <span class="font-display text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1">02</span>
-                        <h2 class="font-display font-bold uppercase tracking-widest text-sm">Triển Khai Mã Nguồn / Cài Đặt *</h2>
+                        <h2 class="font-display font-bold uppercase tracking-widest text-sm">Triển Khai Mã Nguồn / Cài
+                            Đặt *</h2>
                     </div>
                 </div>
                 <div class="relative group">
@@ -286,11 +310,14 @@
                         <span>HOẶC</span>
                         <label for="fileUpload"
                             class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-white px-3 py-1 transition-colors flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[14px]">upload_file</span>KÉO/CHỌN FILE .LSP</label>
-                        <label for="folderUpload" class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-white px-3 py-1 transition-colors flex items-center gap-2 mt-2 sm:mt-0">
+                            <span class="material-symbols-outlined text-[14px]">upload_file</span>KÉO/CHỌN FILE
+                            .LSP</label>
+                        <label for="folderUpload"
+                            class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-white px-3 py-1 transition-colors flex items-center gap-2 mt-2 sm:mt-0">
                             <span class="material-symbols-outlined text-[14px]">folder_zip</span> CHỌN FOLDER
                         </label>
-                        <input type="file" id="folderUpload" webkitdirectory directory multiple class="hidden" onchange="handleFolderUpload(event)">
+                        <input type="file" id="folderUpload" webkitdirectory directory multiple class="hidden"
+                            onchange="handleFolderUpload(event)">
 
                         <input type="file" id="fileUpload" accept=".lsp,.txt" class="hidden"
                             onchange="handleFileUpload(event)">
@@ -313,12 +340,13 @@
     <!-- VIEW SOURCE MODAL -->
     <div id="viewSourceModal"
         class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity duration-300">
-        <div
-            id="viewSourceModalContainer" class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark w-full max-w-4xl h-[90vh] flex flex-col shadow-2xl transform scale-95 transition-all duration-300">
+        <div id="viewSourceModalContainer"
+            class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark w-full max-w-4xl h-[90vh] flex flex-col shadow-2xl transform scale-95 transition-all duration-300">
             <div
                 class="px-6 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-slate-50 dark:bg-black/50">
                 <h3 id="viewSourceTitle"
-                    class="font-display font-bold text-lg uppercase tracking-wider text-slate-800 dark:text-slate-200">Mã Nguồn Của Tool</h3>
+                    class="font-display font-bold text-lg uppercase tracking-wider text-slate-800 dark:text-slate-200">
+                    Mã Nguồn Của Tool</h3>
                 <div class="flex items-center gap-3">
                     <button onclick="copySourceCode()" id="copySourceBtn"
                         class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-display text-[10px] tracking-widest uppercase transition-colors flex items-center gap-2">
@@ -333,7 +361,8 @@
                 <div id="viewSourceLoading"
                     class="absolute inset-0 flex flex-col items-center justify-center bg-[#0d1117] z-10 hidden">
                     <span class="material-symbols-outlined text-4xl animate-spin text-primary">sync</span>
-                    <p class="mt-4 font-display text-xs tracking-widest uppercase text-slate-400">ĐANG TẢI MÃ NGUỒN...</p>
+                    <p class="mt-4 font-display text-xs tracking-widest uppercase text-slate-400">ĐANG TẢI MÃ NGUỒN...
+                    </p>
                 </div>
                 <pre><code id="viewSourceContent" class="font-display text-xs text-slate-300 leading-relaxed tabular-nums whitespace-pre-wrap"></code></pre>
             </div>
@@ -341,11 +370,14 @@
     </div>
 
     <!-- FOOTER -->
-    <footer class="fixed bottom-0 left-0 w-full z-40 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-t border-border-light dark:border-border-dark">
+    <footer
+        class="fixed bottom-0 left-0 w-full z-40 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-t border-border-light dark:border-border-dark">
         <div
             class="max-w-[1400px] mx-auto px-6 py-4 flex justify-between items-center text-[10px] font-display font-bold uppercase tracking-widest text-slate-900 dark:text-slate-100">
             <span id="txt-footer-platform">NỀN TẢNG CHIA SẺ MIỄN PHÍ</span>
-            <span class="text-slate-500 font-mono drop-shadow-md cursor-pointer hover:text-primary transition-colors pointer-events-auto" id="txt-footer-copy" onclick="openZaloPopup()">COPYRIGHT © 2026 by Son Ho ZALO 0364847376</span>
+            <span
+                class="text-slate-500 font-mono drop-shadow-md cursor-pointer hover:text-primary transition-colors pointer-events-auto"
+                id="txt-footer-copy" onclick="openZaloPopup()">COPYRIGHT © 2026 by Son Ho ZALO 0364847376</span>
         </div>
     </footer>
 
@@ -486,51 +518,89 @@
                     btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> FETCHING...';
                     btn.disabled = true;
 
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error('Network error');
-                    const text = await response.text();
-                    
-                    // If content is just a single external link, open it!
-                    const trimmed = text.trim();
-                    if ((trimmed.startsWith('http://') || trimmed.startsWith('https://')) && !trimmed.includes('\n')) {
-                        window.open(trimmed, '_blank');
-                        btn.innerHTML = ogHtml;
-                        btn.disabled = false;
-                        return;
-                    }
+                    // Detect if the file is a zip archive (ignoring query parameters)
+                    const baseUrl = url.split('?')[0];
+                    const isZip = baseUrl.toLowerCase().endsWith('.zip');
 
-                    // Native Windows File Save Dialog via showSaveFilePicker API
-                    if (window.showSaveFilePicker) {
-                        try {
-                            const handle = await window.showSaveFilePicker({
-                                suggestedName: title + '.lsp',
-                                types: [{
-                                    description: 'Lisp File',
-                                    accept: { 'text/plain': ['.lsp'] },
-                                }],
-                            });
-                            const writable = await handle.createWritable();
-                            await writable.write(text);
-                            await writable.close();
-                            showToast("Đã tải file thành công!", "success");
-                        } catch (err) {
-                            // User cancelled the dialog, do nothing
-                            if (err.name !== 'AbortError') {
-                                throw err;
+                    if (isZip) {
+                        const response = await fetch(url);
+                        if (!response.ok) throw new Error('Network error');
+                        const blob = await response.blob();
+
+                        if (window.showSaveFilePicker) {
+                            try {
+                                const handle = await window.showSaveFilePicker({
+                                    suggestedName: title + '.zip',
+                                    types: [{
+                                        description: 'Zip Archive',
+                                        accept: { 'application/zip': ['.zip'] },
+                                    }],
+                                });
+                                const writable = await handle.createWritable();
+                                await writable.write(blob);
+                                await writable.close();
+                                showToast("Đã tải file thành công!", "success");
+                            } catch (err) {
+                                if (err.name !== 'AbortError') throw err;
                             }
+                        } else {
+                            const blobUrl = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = blobUrl;
+                            a.target = '_blank';
+                            a.download = title + '.zip';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(blobUrl);
+                            showToast("Đã tải file thành công!", "success");
                         }
                     } else {
-                        // Fallback automatically save to default Downloads folder
-                        const blob = new Blob([text], { type: 'text/plain' });
-                        const blobUrl = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = blobUrl;
-                        a.target = '_blank';
-                        a.download = title + '.lsp';
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(blobUrl);
+                        // Regular flow for LSP text code
+                        const response = await fetch(url);
+                        if (!response.ok) throw new Error('Network error');
+                        const text = await response.text();
+
+                        // If content is just a single external link, open it!
+                        const trimmed = text.trim();
+                        if ((trimmed.startsWith('http://') || trimmed.startsWith('https://')) && !trimmed.includes('\\n')) {
+                            window.open(trimmed, '_blank');
+                            btn.innerHTML = ogHtml;
+                            btn.disabled = false;
+                            return;
+                        }
+
+                        // Native Windows File Save Dialog via showSaveFilePicker API
+                        if (window.showSaveFilePicker) {
+                            try {
+                                const handle = await window.showSaveFilePicker({
+                                    suggestedName: title + '.lsp',
+                                    types: [{
+                                        description: 'Lisp File',
+                                        accept: { 'text/plain': ['.lsp'] },
+                                    }],
+                                });
+                                const writable = await handle.createWritable();
+                                await writable.write(text);
+                                await writable.close();
+                                showToast("Đã tải file thành công!", "success");
+                            } catch (err) {
+                                if (err.name !== 'AbortError') throw err;
+                            }
+                        } else {
+                            // Fallback automatically save to default Downloads folder
+                            const blob = new Blob([text], { type: 'text/plain' });
+                            const blobUrl = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = blobUrl;
+                            a.target = '_blank';
+                            a.download = title + '.lsp';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(blobUrl);
+                            showToast("Đã tải file thành công!", "success");
+                        }
                     }
 
                     btn.innerHTML = ogHtml;
@@ -582,7 +652,7 @@
 
             contentEl.innerText = "";
             loadingEl.classList.remove('hidden');
-            
+
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             void modal.offsetWidth; // force reflow
@@ -605,10 +675,10 @@
         function closeSourceModal() {
             const modal = document.getElementById('viewSourceModal');
             const container = document.getElementById('viewSourceModalContainer');
-            
+
             container.classList.remove('scale-100');
             container.classList.add('scale-95');
-            
+
             setTimeout(() => {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
@@ -704,13 +774,13 @@
         async function handleFolderUpload(event) {
             const files = event.target.files;
             if (!files || files.length === 0) return;
-            
+
             const zip = new JSZip();
             let totalSize = 0;
             const MAX_SIZE = 50 * 1024 * 1024; // 50MB
-            
+
             document.getElementById('toolCode').value = "Đang nén thư mục, vui lòng đợi...";
-            
+
             try {
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
@@ -718,10 +788,10 @@
                     if (totalSize > MAX_SIZE) throw new Error("Vượt quá 50MB");
                     zip.file(file.webkitRelativePath || file.name, file);
                 }
-                const content = await zip.generateAsync({ type: "base64", compression: "DEFLATE", compressionOptions: { level: 6 }});
+                const content = await zip.generateAsync({ type: "base64", compression: "DEFLATE", compressionOptions: { level: 6 } });
                 window.isZipUpload = true;
                 document.getElementById('toolCode').value = content;
-                showToast("Đã nén thư mục (" + (totalSize/(1024*1024)).toFixed(2) + "MB)", "success");
+                showToast("Đã nén thư mục (" + (totalSize / (1024 * 1024)).toFixed(2) + "MB)", "success");
             } catch (err) {
                 document.getElementById('toolCode').value = "";
                 showToast(err.message === "Vượt quá 50MB" ? "Thư mục quá lớn (>50MB)" : "Lỗi nén thư mục", "error");
@@ -731,7 +801,7 @@
         async function handleFileDrop(event) {
             event.preventDefault();
             event.currentTarget.classList.remove('border-primary');
-            
+
             const items = event.dataTransfer.items;
             if (items && items.length > 0) {
                 const entry = items[0].webkitGetAsEntry ? items[0].webkitGetAsEntry() : null;
@@ -740,11 +810,11 @@
                     return;
                 }
             }
-            
+
             const file = event.dataTransfer.files[0];
             if (file) {
-                 window.isZipUpload = false;
-                 readFileContent(file);
+                window.isZipUpload = false;
+                readFileContent(file);
             }
         }
 
@@ -753,7 +823,7 @@
             let totalSize = 0;
             const MAX_SIZE = 50 * 1024 * 1024;
             document.getElementById('toolCode').value = "Đang nén thư mục, vui lòng đợi...";
-            
+
             async function traverse(item, path) {
                 if (item.isFile) {
                     const file = await new Promise(resolve => item.file(resolve));
@@ -781,10 +851,10 @@
                     const item = items[i].webkitGetAsEntry ? items[i].webkitGetAsEntry() : null;
                     if (item) await traverse(item, "");
                 }
-                const content = await zip.generateAsync({ type: "base64", compression: "DEFLATE", compressionOptions: { level: 6 }});
+                const content = await zip.generateAsync({ type: "base64", compression: "DEFLATE", compressionOptions: { level: 6 } });
                 window.isZipUpload = true;
                 document.getElementById('toolCode').value = content;
-                showToast("Đã nén thư mục (" + (totalSize/(1024*1024)).toFixed(2) + "MB)", "success");
+                showToast("Đã nén thư mục (" + (totalSize / (1024 * 1024)).toFixed(2) + "MB)", "success");
             } catch (err) {
                 document.getElementById('toolCode').value = "";
                 showToast(err.message === "Vượt quá 50MB" ? "Thư mục quá lớn (>50MB)" : "Lỗi nén", "error");
@@ -803,7 +873,7 @@
             reader.readAsText(file);
         }
 
-        
+
         // Chạy app
         window.onload = initApp;
 
@@ -811,7 +881,7 @@
         function openZaloPopup() {
             const m = document.getElementById('zaloModal');
             const c = document.getElementById('zaloModalContent');
-            if(m && c) {
+            if (m && c) {
                 m.classList.remove('hidden');
                 m.classList.add('flex');
                 void m.offsetWidth; // force reflow
@@ -822,7 +892,7 @@
         function closeZaloPopup() {
             const m = document.getElementById('zaloModal');
             const c = document.getElementById('zaloModalContent');
-            if(m && c) {
+            if (m && c) {
                 c.classList.remove('scale-100');
                 c.classList.add('scale-95');
                 setTimeout(() => {
@@ -837,11 +907,11 @@
                 const btn = document.getElementById('btnCopyZaloText');
                 const og = btn.innerHTML;
                 btn.innerHTML = `COPIED`;
-                
+
                 const btnWrap = document.getElementById('btnCopyZalo');
                 btnWrap.classList.add('bg-blue-500', 'text-white');
                 btnWrap.classList.remove('text-blue-500', 'bg-blue-500/10');
-                
+
                 // Change icon
                 const icon = document.getElementById('zaloCopyIcon');
                 icon.innerText = 'check';
@@ -860,23 +930,32 @@
     </script>
 
     <!-- ZALO MODAL -->
-    <div id="zaloModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity duration-300">
-        <div class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark w-full max-w-sm flex flex-col shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="zaloModalContent">
+    <div id="zaloModal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity duration-300">
+        <div class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark w-full max-w-sm flex flex-col shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300"
+            id="zaloModalContent">
             <div class="p-8 flex flex-col items-center text-center">
                 <div class="w-16 h-16 bg-blue-500/10 text-blue-500 rounded-full flex items-center justify-center mb-6">
                     <span class="material-symbols-outlined text-3xl">chat</span>
                 </div>
-                <h3 class="font-display font-bold text-xl mb-2 text-slate-900 dark:text-white uppercase tracking-wider">Liên hệ Zalo</h3>
-                <p class="text-slate-500 text-sm font-display mb-8">Bạn có thể copy số điện thoại Zalo của SONHPA bên dưới để trao đổi thêm.</p>
-                
-                <div class="w-full bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between mb-8 group hover:border-blue-500/50 transition-colors">
-                    <span class="font-mono text-lg font-bold tracking-widest text-slate-800 dark:text-slate-200">0364847376</span>
-                    <button onclick="copyZaloNumber()" id="btnCopyZalo" class="text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1 text-[10px] font-display font-bold uppercase tracking-wider bg-blue-500/10 px-3 py-1.5 rounded">
-                        <span class="material-symbols-outlined text-[14px]" id="zaloCopyIcon">content_copy</span> <span id="btnCopyZaloText">COPY</span>
+                <h3 class="font-display font-bold text-xl mb-2 text-slate-900 dark:text-white uppercase tracking-wider">
+                    Liên hệ Zalo</h3>
+                <p class="text-slate-500 text-sm font-display mb-8">Bạn có thể copy số điện thoại Zalo của SONHPA bên
+                    dưới để trao đổi thêm.</p>
+
+                <div
+                    class="w-full bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between mb-8 group hover:border-blue-500/50 transition-colors">
+                    <span
+                        class="font-mono text-lg font-bold tracking-widest text-slate-800 dark:text-slate-200">0364847376</span>
+                    <button onclick="copyZaloNumber()" id="btnCopyZalo"
+                        class="text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1 text-[10px] font-display font-bold uppercase tracking-wider bg-blue-500/10 px-3 py-1.5 rounded">
+                        <span class="material-symbols-outlined text-[14px]" id="zaloCopyIcon">content_copy</span> <span
+                            id="btnCopyZaloText">COPY</span>
                     </button>
                 </div>
-                
-                <button onclick="closeZaloPopup()" class="w-full py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-display font-bold text-xs uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors">
+
+                <button onclick="closeZaloPopup()"
+                    class="w-full py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-display font-bold text-xs uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors">
                     ĐÓNG
                 </button>
             </div>
