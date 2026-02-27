@@ -40,11 +40,18 @@ module.exports = async (req, res) => {
     // 1. Upload file .lsp trực tiếp lên nhánh
     // Tên file: bỏ dấu, khoảng trắng thành _, thay bằng timestamp cho chắc ăn không trùng.
     const safeName = title.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
-    const lspFileName = `${safeName}_${Date.now()}.lsp`;
+    const isZip = req.body.isZip || false;
+    const lspFileName = `${safeName}_${Date.now()}${isZip ? '.zip' : '.lsp'}`;
     const lspFilePath = `scripts/${lspFileName}`;
 
     // Convert LISP code to Base64
-    const lspFileContentBase64 = Buffer.from(toolCode).toString('base64');
+    let lspFileContentBase64;
+    if (isZip) {
+        // Nếu là zip, toolCode từ client gửi lên đã là base64 sẵn
+        lspFileContentBase64 = toolCode;
+    } else {
+        lspFileContentBase64 = Buffer.from(toolCode).toString('base64');
+    }
 
     await octokit.repos.createOrUpdateFileContents({
       owner,
