@@ -1,621 +1,524 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
-    <link rel="icon" type="image/png" href="logo.png">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lisp Cad Miễn Phí Cho Mọi nhà</title>
-    <style>
-        /* =========================================
-           PHẦN 1: CSS GIAO DIỆN (CHẾ ĐỘ SÁNG)
-           ========================================= */
-        :root {
-            --bg-color: #f0f2f5;
-            --text-color: #1a1a1a;
-            --card-bg: #ffffff;
-            --border-color: #ddd;
-            --input-bg: #ffffff;
-            --header-color: #008080;
-            --subtext: #666666;
-            --shadow: rgba(0, 0, 0, 0.1);
-            --modal-bg: rgba(0, 0, 0, 0.5);
-            --cad-color: #ce9178;
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>LispCad Free Platform</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e11d48',
+                        'background-light': '#fdfdfd',
+                        'background-dark': '#0a0a0c',
+                        'card-light': '#ffffff',
+                        'card-dark': '#121214',
+                        'border-light': '#e5e7eb',
+                        'border-dark': '#27272a',
+                    },
+                    fontFamily: {
+                        display: ['JetBrains Mono', 'monospace'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    borderRadius: { DEFAULT: '0px' },
+                },
+            },
+        };
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
         }
-
-        /* =========================================
-           PHẦN 2: THIẾT KẾ GIAO DIỆN CHUNG
-           ========================================= */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            padding-bottom: 100px;
-            scroll-behavior: smooth;
+        function showSubmissionForm() {
+            document.getElementById('main-list').classList.add('hidden');
+            document.getElementById('submission-form').classList.remove('hidden');
         }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
+        function hideSubmissionForm() {
+            document.getElementById('submission-form').classList.add('hidden');
+            document.getElementById('main-list').classList.remove('hidden');
         }
-
-        h1 {
-            color: var(--header-color);
-            text-align: center;
-            margin-bottom: 5px;
-            line-height: 1.2;
-            margin-top: 20px;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: var(--subtext);
-            margin-bottom: 30px;
-            font-style: italic;
-        }
-
-        /* Toolbar */
-        .toolbar {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
-
-        .btn-add-main {
-            background: #4caf50;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 15px;
-            cursor: pointer;
-            transition: 0.2s;
-            white-space: nowrap;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-add-main:hover {
-            background: #45a049;
-            transform: translateY(-2px);
-        }
-
-        .btn-zalo {
-            background: #0068ff;
-            color: white;
-            margin-left: 10px;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 15px;
-            cursor: pointer;
-            transition: 0.2s;
-            white-space: nowrap;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .btn-zalo:hover {
-            background: #005ce6;
-            transform: translateY(-2px);
-        }
-
-        /* Danh sách Tools */
-        .lisp-item {
-            background-color: var(--card-bg);
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border-left: 5px solid gray;
-            box-shadow: 0 2px 8px var(--shadow);
-            position: relative;
-            transition: all 0.3s;
-        }
-
-        .lisp-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px var(--shadow);
-        }
-
-        .type-cad {
-            border-left-color: var(--cad-color);
-        }
-
-        .lisp-title {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: var(--text-color);
-            margin-right: 30px;
-        }
-
-        .lisp-desc {
-            font-style: italic;
-            color: var(--subtext);
-            margin: 8px 0;
-            font-size: 0.95em;
-        }
-
-        .btn-group {
-            margin-top: 12px;
-        }
-
-        /* Nút hành động */
-        button.action-btn {
-            text-decoration: none;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-            display: inline-block;
-            font-size: 13px;
-            margin-right: 8px;
-            margin-bottom: 5px;
-            padding: 8px 15px;
-            color: white;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        .download-btn {
-            background: #0e639c;
-        }
-
-        .download-btn:hover {
-            background: #1177bb;
-        }
-
-        .guide-btn {
-            background: #606060;
-        }
-
-        .guide-btn:hover {
-            background: #808080;
-        }
-
-        /* Nút xóa tool */
-        .delete-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: transparent;
-            border: none;
-            color: #ff4d4d;
-            font-size: 18px;
-            cursor: pointer;
-            opacity: 0.5;
-            transition: 0.2s;
-        }
-
-        .delete-btn:hover {
-            opacity: 1;
-            transform: scale(1.2);
-        }
-
-        /* Hệ thống Modal (Popup) */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: var(--modal-bg);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background-color: var(--card-bg);
-            padding: 25px;
-            border: 1px solid var(--border-color);
-            width: 90%;
-            max-width: 500px;
-            border-radius: 12px;
-            position: relative;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .close-modal {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            color: var(--subtext);
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .close-modal:hover {
-            color: #ff4d4d;
-        }
-
-        .modal h2 {
-            margin-top: 0;
-            color: var(--header-color);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-
-        /* Form trong Modal */
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid var(--border-color);
-            background: var(--input-bg);
-            color: var(--text-color);
-            box-sizing: border-box;
-            font-family: inherit;
-        }
-
-        textarea.form-control {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .btn-submit {
-            width: 100%;
-            background: #0e639c;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: 0.2s;
-        }
-
-        .btn-submit:hover {
-            background: #1177bb;
-        }
-
-        /* Toast Thông báo */
-        #toast {
-            position: fixed;
-            bottom: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: bold;
-            z-index: 9999;
-            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        #toast.show {
-            bottom: 30px;
-        }
-
-        #toast.success {
-            background: #4caf50;
-        }
-
-        #toast.error {
-            background: #f44336;
-        }
-
-        /* Loading Overlay */
-        #loading {
-            position: fixed;
-            inset: 0;
-            background: var(--bg-color);
-            z-index: 3000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .spinner {
-            border: 4px solid var(--border-color);
-            border-top: 4px solid var(--header-color);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Highlight chữ trong guide */
-        .cmd-highlight {
-            background: var(--input-bg);
-            padding: 2px 6px;
-            border-radius: 3px;
-            color: #ff9d00;
-            font-family: monospace;
-            font-weight: bold;
-        }
-    </style>
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+      .blueprint-bg {
+        background-image: radial-gradient(circle, #e2e8f0 1px, transparent 1px);
+        background-size: 32px 32px;
+      }
+      .dark .blueprint-bg {
+        background-image: radial-gradient(circle, #1e1e24 1px, transparent 1px);
+      }
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #e11d48; }
+  </style>
 </head>
 
-<body>
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-sans blueprint-bg min-h-screen transition-colors duration-300 pb-24">
 
-    <!-- Màn hình chờ tải dữ liệu -->
-    <div id="loading">
-        <div class="spinner"></div>
-        <div style="font-weight: bold;" id="loading-text">Đang tải kho tài nguyên...</div>
-    </div>
-
-    <div class="container">
-        <h1>📐 LISP CAD MIỄN PHÍ CHO MỌI NHÀ</h1>
-        <div class="subtitle">Thư viện Lisp AutoCAD chia sẻ cộng đồng</div>
-
-        <!-- Thanh công cụ Thêm -->
-        <div class="toolbar">
-            <button class="btn-add-main" onclick="openAddModal()">+ Thêm Tool</button>
-            <button class="btn-zalo" onclick="openContactModal()">💬 Liên Hệ</button>
-        </div>
-
-        <!-- Khung chứa danh sách Render từ Cloud/Local -->
-        <div id="tools-container"></div>
-    </div>
-
-    <!-- ================= MODALS (POPUPS) ================= -->
-
-    <!-- 1. Modal Thêm Tool Mới -->
-    <div id="addModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('addModal')">&times;</span>
-            <h2>➕ Thêm Tool Mới</h2>
-            <form id="addToolForm">
-                <input type="hidden" id="toolCategory" value="cad">
-                <div class="form-group">
-                    <label>Tên Lệnh / Tên Tool</label>
-                    <input type="text" id="toolTitle" class="form-control" placeholder="VD: TL - Tính tổng chiều dài"
-                        required>
+    <!-- HEADER -->
+    <header
+        class="sticky top-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-b border-border-light dark:border-border-dark">
+        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-10">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="hideSubmissionForm()">
+                    <img src="logo.png" alt="Logo" class="w-8 h-8 object-contain"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <div class="w-8 h-8 flex items-center justify-center bg-primary text-white font-bold hidden"
+                        style="display: none;">CAD</div>
+                    <div class="flex flex-col leading-none">
+                        <span class="font-display font-bold tracking-tighter text-xl uppercase">Lisp Cad</span>
+                        <span class="text-[9px] font-mono tracking-[0.3em] text-primary font-bold">All Best
+                            Things</span>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Mô tả ngắn gọn</label>
-                    <input type="text" id="toolDesc" class="form-control"
-                        placeholder="VD: Tính tổng chiều dài các đường..." required>
-                </div>
-                <div class="form-group">
-                    <label>Link Google Drive (Tải về)</label>
-                    <input type="url" id="toolFile" class="form-control"
-                        placeholder="VD: https://drive.google.com/file/d/..." required>
-                </div>
-                <div class="form-group">
-                    <label>Nội dung Hướng dẫn (Có thể dùng HTML)</label>
-                    <textarea id="toolGuide" class="form-control" placeholder="1. Cài đặt...\n2. Sử dụng..."></textarea>
-                </div>
-                <button type="submit" class="btn-submit">💾 Lưu Lên Mây</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- 2. Modal Hướng Dẫn -->
-    <div id="guideModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('guideModal')">&times;</span>
-            <h2 id="guideTitle">Hướng dẫn</h2>
-            <div id="guideBody" style="line-height: 1.6; margin-top: 15px;">Nội dung...</div>
-        </div>
-    </div>
-
-    <!-- 3. Modal Thông Báo Xóa -->
-    <div id="deleteModal" class="modal">
-        <div class="modal-content" style="text-align: center;">
-            <span class="close-modal" onclick="closeModal('deleteModal')">&times;</span>
-            <h2 style="color: #ff9800; border-bottom: none;">⚠️ THÔNG BÁO</h2>
-            <p style="font-size: 16px; line-height: 1.5; margin-top: 10px; color: var(--text-color);">
-                Để bảo vệ thư viện chung, bạn không thể tự ý xóa.<br><br>
-                Vui lòng liên hệ Admin để được hỗ trợ hoặc cấp quyền xóa tool nhé!
-            </p>
-            <div style="margin-top: 25px;">
-                <button class="btn-zalo" style="margin-left: 0;"
-                    onclick="closeModal('deleteModal'); openContactModal();">💬 Liên Hệ Admin</button>
+            </div>
+            <div class="flex items-center gap-6">
+                <button class="p-2 text-slate-400 hover:text-primary transition-colors" onclick="toggleDarkMode()">
+                    <span class="material-symbols-outlined text-xl">contrast</span>
+                </button>
+                <button onclick="showSubmissionForm()"
+                    class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2 text-[11px] font-display font-bold uppercase tracking-widest hover:bg-primary dark:hover:bg-primary dark:hover:text-white transition-all shadow-sm">
+                    SUBMIT TOOL
+                </button>
             </div>
         </div>
-    </div>
+    </header>
 
-    <!-- 4. Modal Liên Hệ -->
-    <div id="contactModal" class="modal">
-        <div class="modal-content" style="text-align: center;">
-            <span class="close-modal" onclick="closeModal('contactModal')">&times;</span>
-            <h2 style="color: #0068ff; border-bottom: none;">💬 LIÊN HỆ</h2>
-            <p style="font-size: 24px; font-weight: bold; margin-top: 20px; color: var(--text-color);">
-                Zalo: 0364847376
-            </p>
-            <p style="font-size: 15px; color: var(--subtext); margin-top: 10px;">
-                (Vui lòng copy số điện thoại và tìm kiếm trên Zalo)
-            </p>
+    <!-- MAIN LIST PAGE -->
+    <main id="main-list" class="max-w-[1400px] mx-auto px-6 py-10 flex flex-col md:flex-row gap-10">
+
+        <!-- Sidebar -->
+        <aside class="w-full md:w-72 flex-shrink-0 relative">
+            <div class="sticky top-24 pb-8">
+                <h2
+                    class="font-display text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 mb-6 flex items-center gap-2">
+                    <span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span>Categories
+                </h2>
+                <nav class="space-y-2" id="category-nav">
+                    <a href="#" onclick="filterByCategory('all', this)"
+                        class="category-link flex items-center justify-between px-4 py-3 bg-primary/5 border-r-4 border-primary text-primary group transition-all mb-4">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-2xl">apps</span>
+                            <span class="font-display text-xs font-bold tracking-widest uppercase">All Tools</span>
+                        </div>
+                        <span class="text-sm font-mono opacity-60" id="count-all">0</span>
+                    </a>
+                    <a href="#" onclick="filterByCategory('cad', this)"
+                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
+                        <div class="flex items-center gap-4">
+                            <span
+                                class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">view_in_ar</span>
+                            <span
+                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">CAD
+                                General</span>
+                        </div>
+                        <span class="text-sm font-mono opacity-40" id="count-cad">0</span>
+                    </a>
+                    <a href="#" onclick="filterByCategory('lisp', this)"
+                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
+                        <div class="flex items-center gap-4">
+                            <span
+                                class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">code</span>
+                            <span
+                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Lisp
+                                Scripts</span>
+                        </div>
+                        <span class="text-sm font-mono opacity-40" id="count-lisp">0</span>
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Content List -->
+        <section class="flex-1">
+            <div class="mb-10">
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                        <span
+                            class="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+                    </div>
+                    <input id="searchInput" oninput="searchTools()"
+                        class="block w-full pl-14 pr-12 py-5 bg-white dark:bg-black border-2 border-border-light dark:border-border-dark focus:ring-0 focus:border-primary font-display text-sm tracking-tight placeholder-slate-400 outline-none"
+                        placeholder="Search for tool name or function..." type="text" />
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading-state" class="py-20 flex flex-col items-center justify-center opacity-50">
+                <span class="material-symbols-outlined text-4xl animate-spin">sync</span>
+                <p class="mt-4 font-display text-xs tracking-widest uppercase">SYNCING REPOSITORY...</p>
+            </div>
+
+            <!-- Tool Container -->
+            <div id="tools-container" class="grid grid-cols-1 gap-4 hidden">
+                <!-- Tools will be injected here -->
+            </div>
+
+        </section>
+    </main>
+
+    <!-- SUBMISSION PAGE (Hidden by default) -->
+    <main id="submission-form" class="max-w-[1000px] mx-auto px-6 py-12 hidden">
+        <header class="mb-12 cursor-pointer" onclick="hideSubmissionForm()">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-900 border border-border-light dark:border-border-dark hover:border-primary transition-colors mb-4 group">
+                <span
+                    class="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                <span class="text-[10px] font-display font-bold uppercase tracking-[0.2em]">Back to Repository</span>
+            </div>
+            <h1 class="text-4xl font-display font-bold tracking-tight mb-2 uppercase">Submit New Tool</h1>
+            <p class="text-slate-500 dark:text-slate-400 font-display text-sm">Share your Lisp code directly to the
+                public repository.</p>
+        </header>
+
+        <form id="addToolForm" class="space-y-8">
+
+            <!-- Section 1: Info -->
+            <section
+                class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark p-8 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+                <div class="flex items-center gap-3 mb-8">
+                    <span class="font-display text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1">01</span>
+                    <h2 class="font-display font-bold uppercase tracking-widest text-sm">Source Identity</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Tool
+                            Name *</label>
+                        <input required id="toolTitle"
+                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
+                            placeholder="e.g. TL - Total Length" type="text" />
+                    </div>
+                    <div class="space-y-2">
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Category</label>
+                        <select id="toolCategory"
+                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary">
+                            <option value="cad">CAD General</option>
+                            <option value="lisp">Lisp Script</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2 space-y-2">
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Technical
+                            Description *</label>
+                        <textarea required id="toolDesc"
+                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary resize-none"
+                            placeholder="Describe what this lisp does..." rows="2"></textarea>
+                    </div>
+                    <div class="md:col-span-2 space-y-2">
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Usage
+                            Guide</label>
+                        <textarea id="toolGuide"
+                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary resize-none"
+                            placeholder="Command to run, how to use it..." rows="2"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Code -->
+            <section
+                class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark p-8 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-slate-400"></div>
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center gap-3">
+                        <span class="font-display text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1">02</span>
+                        <h2 class="font-display font-bold uppercase tracking-widest text-sm">Source Code Deployment *
+                        </h2>
+                    </div>
+                </div>
+                <div class="relative group">
+                    <textarea required id="toolCode"
+                        ondragover="event.preventDefault(); this.classList.add('border-primary');"
+                        ondragleave="this.classList.remove('border-primary');" ondrop="handleFileDrop(event);"
+                        class="w-full bg-[#0d1117] text-slate-300 font-display text-xs p-6 pt-10 focus:outline-none border border-border-dark focus:border-primary leading-relaxed custom-scrollbar transition-colors"
+                        placeholder=";; Paste Lisp Tool code here...&#10;(defun c:example ()&#10;  (princ &quot;\nHello World&quot;)&#10;)&#10;"
+                        rows="12"></textarea>
+                    <div class="absolute top-3 right-4 flex items-center gap-4 text-[10px] font-display text-slate-500">
+                        <span>PASTE RAW CODE</span>
+                        <span>OR</span>
+                        <label for="fileUpload"
+                            class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-white px-3 py-1 transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[14px]">upload_file</span>
+                            DROP/SELECT .LSP FILE
+                        </label>
+                        <input type="file" id="fileUpload" accept=".lsp,.txt" class="hidden"
+                            onchange="handleFileUpload(event)">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Submit Button -->
+            <div class="pt-4">
+                <button id="btnSubmit"
+                    class="w-full bg-primary text-white font-display font-bold text-sm py-5 tracking-[0.3em] uppercase hover:bg-rose-700 transition-colors flex items-center justify-center gap-3 shadow-lg shadow-primary/20"
+                    type="submit">
+                    <span class="material-symbols-outlined text-lg">upload</span>
+                    <span>EXECUTE SUBMISSION TO GITHUB</span>
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <!-- FOOTER -->
+    <footer
+        class="fixed bottom-0 left-0 w-full z-40 bg-background-light dark:bg-background-dark border-t-2 border-primary border-b-2 border-b-primary shadow-[0_-10px_30px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_30px_rgba(0,0,0,0.8)]">
+        <div
+            class="max-w-[1400px] mx-auto px-6 py-4 flex justify-between items-center text-[10px] font-display font-bold uppercase tracking-widest text-slate-900 dark:text-slate-100">
+            <span>LISP CAD FREE PLATFORM</span>
+            <span class="text-slate-500 font-mono">© 2026. OPEN SOURCE.</span>
         </div>
+    </footer>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast"
+        class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-4 shadow-xl z-50 flex items-center gap-3 font-display text-xs tracking-wider">
+        <span id="toast-icon" class="material-symbols-outlined text-primary">info</span>
+        <span id="toast-msg">Notification message here</span>
     </div>
 
-    <!-- Toast Thông báo góc dưới -->
-    <div id="toast">Thông báo</div>
-
-    <!-- ================= SCRIPT XỬ LÝ LÔ-GÍC & DATABASE ================= -->
+    <!-- LOGIC SCRIPT -->
     <script>
-        // =================================================================
-        // BƯỚC QUAN TRỌNG: DÁN LINK WEB APP CỦA GOOGLE APPS SCRIPT VÀO ĐÂY
-        // Nếu để trống (""), web sẽ tự động chạy bằng LocalStorage (Máy cá nhân)
-        // =================================================================
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyO9WsGjnyyxrZBToV2JXyD79c1lrUl0tqiVdw-Q1w1GvdxxW3JFhl1hB6YeOSEIGDJ/exec";
+        // CẤU HÌNH API VÀ GITHUB
+        const VERCEL_API_URL = "https://lispcad-free.vercel.app/api/upload"; // Điền link vercel API vào đây sau khi deploy
+        const GITHUB_OWNER = "sonho0310";
+        const GITHUB_REPO = "lispcad-data";
+        const GITHUB_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/database.json`;
 
         let allTools = [];
+        let currentCategory = 'all';
 
-        // Khởi tạo App
+        // Hiển thị Toast
+        function showToast(msg, type = 'info') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            document.getElementById('toast-icon').innerText = type === 'error' ? 'error' : 'check_circle';
+            document.getElementById('toast-icon').className = `material-symbols-outlined ${type === 'error' ? 'text-rose-500' : 'text-emerald-500'}`;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 4000);
+        }
+
+        // Khởi tạo và fetch dữ liệu
         async function initApp() {
-            if (GOOGLE_SCRIPT_URL !== "") {
-                // Chế độ: Dùng Google Drive làm Server
-                document.getElementById('loading-text').innerText = "Đang kết nối Server Google...";
-                try {
-                    const response = await fetch(GOOGLE_SCRIPT_URL);
-                    const data = await response.json();
-
-                    console.log("Dữ liệu tải về từ Server:", data); // In ra console để kiểm tra lỗi nếu có
-                    allTools = data;
-                    renderTools();
-                } catch (error) {
-                    console.error("Lỗi kết nối Server:", error);
-                    showToast("❌ Không thể kết nối tới Google Server. Vui lòng nhấn F12 kiểm tra tab Console!", "error");
-                } finally {
-                    document.getElementById('loading').style.display = 'none';
-                }
-            } else {
-                // Chế độ: LocalStorage (Lưu tạm trên máy)
-                document.getElementById('loading').style.display = 'none';
-                const savedTools = localStorage.getItem('lispToolsDB');
-                if (savedTools) {
-                    allTools = JSON.parse(savedTools);
-                    renderTools();
-                } else {
-                    seedDefaultData();
-                }
+            try {
+                const response = await fetch(`${GITHUB_RAW_URL}?t=${Date.now()}`);
+                if (!response.ok) throw new Error('Not found or fetch error');
+                allTools = await response.json();
+                if (!Array.isArray(allTools)) allTools = [];
+            } catch (e) {
+                console.log("Fallback to LocalStorage due to fetch error:", e);
+                const local = localStorage.getItem('lisp_db');
+                if (local) allTools = JSON.parse(local);
             }
-        }
-
-        // --- HÀM VẼ GIAO DIỆN DANH SÁCH ---
-        window.renderTools = function () {
-            const container = document.getElementById('tools-container');
-            container.innerHTML = '';
-
-            if (allTools.length > 0) {
-                [...allTools].reverse().forEach(tool => {
-                    const t_id = tool.id;
-                    const t_title = tool.title ? String(tool.title).replace(/"/g, '&quot;') : '';
-                    const t_file = tool.filename ? String(tool.filename).replace(/"/g, '&quot;') : '#';
-
-                    container.innerHTML += `
-                <div class="lisp-item type-cad">
-                    <button class="delete-btn" onclick="deleteTool('${t_id}')" title="Xóa Tool này">🗑️</button>
-                    <div class="lisp-title">${tool.title}</div>
-                    <div class="lisp-desc">${tool.desc}</div>
-                    <div class="btn-group">
-                        <button class="action-btn download-btn" onclick="window.open('${t_file}', '_blank')">Mở đi</button>
-                        <button class="action-btn guide-btn" onclick="openGuide('${t_id}')">Hướng dẫn</button>
-                    </div>
-                </div>`;
-                });
-            } else {
-                container.innerHTML = `<div style="text-align:center; margin-top:50px; color:var(--subtext);">Chưa có công cụ nào!</div>`;
-            }
-        }
-
-        // --- HÀM THÊM TOOL LÊN GOOGLE SCRIPT ---
-        document.getElementById('addToolForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-            const btn = e.target.querySelector('button');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '⏳ Đang lưu...'; btn.disabled = true;
-
-            const newTool = {
-                id: Date.now().toString(),
-                category: document.getElementById('toolCategory').value,
-                title: document.getElementById('toolTitle').value,
-                desc: document.getElementById('toolDesc').value,
-                filename: document.getElementById('toolFile').value,
-                guide: document.getElementById('toolGuide').value.replace(/\n/g, '<br>')
-            };
-
-            if (GOOGLE_SCRIPT_URL !== "") {
-                // Gửi dữ liệu lên Google Sheets
-                try {
-                    await fetch(GOOGLE_SCRIPT_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: new URLSearchParams({ action: 'add', data: JSON.stringify(newTool) })
-                    });
-
-                    allTools.push(newTool);
-                    renderTools();
-                    showToast("✅ Đã lưu thành công lên Server!", "success");
-                } catch (error) {
-                    showToast("❌ Lỗi khi tải lên Server!", "error");
-                }
-            } else {
-                // Lưu Local
-                allTools.push(newTool);
-                localStorage.setItem('lispToolsDB', JSON.stringify(allTools));
-                renderTools();
-                showToast("✅ Đã lưu cục bộ (Chưa cấu hình link Server)!", "success");
-            }
-
-            closeModal('addModal');
-            e.target.reset();
-            btn.innerHTML = originalText; btn.disabled = false;
-        });
-
-        // --- HÀM XÓA TOOL ---
-        window.deleteTool = function (id) {
-            document.getElementById('deleteModal').style.display = 'flex';
-        }
-
-        // --- DỮ LIỆU MẪU BAN ĐẦU (Chỉ dùng cho Local) ---
-        function seedDefaultData() {
-            allTools = [
-                { id: "1", category: 'cad', title: 'TL - Tính tổng chiều dài', desc: 'Tính tổng chiều dài các đường Line, Pline...', filename: 'https://drive.google.com', guide: 'Gõ lệnh TL' },
-                { id: "2", category: 'cad', title: 'CB - Đếm số lượng Block', desc: 'Thống kê số lượng Block...', filename: 'https://drive.google.com', guide: 'Gõ lệnh CB' }
-            ];
-            localStorage.setItem('lispToolsDB', JSON.stringify(allTools));
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('tools-container').classList.remove('hidden');
             renderTools();
         }
 
-        // --- CÁC HÀM UI ---
-        window.openAddModal = function () { document.getElementById('addModal').style.display = 'flex'; }
-        window.openContactModal = function () { document.getElementById('contactModal').style.display = 'flex'; }
-        window.closeModal = function (modalId) { document.getElementById(modalId).style.display = 'none'; }
-        window.onclick = function (e) { if (e.target.classList.contains('modal')) e.target.style.display = 'none'; }
+        // Render danh sách
+        function renderTools(search = '') {
+            const container = document.getElementById('tools-container');
+            container.innerHTML = '';
 
-        window.openGuide = function (id) {
-            const tool = allTools.find(t => String(t.id) === String(id));
-            if (tool) {
-                document.getElementById('guideTitle').innerText = "Hướng dẫn: " + tool.title;
-                document.getElementById('guideBody').innerHTML = tool.guide ? tool.guide : "<i>Chưa có hướng dẫn cho tool này.</i>";
-                document.getElementById('guideModal').style.display = 'flex';
+            let filtered = allTools.filter(t => {
+                const matchCat = currentCategory === 'all' || t.category === currentCategory;
+                const matchSearch = String(t.title).toLowerCase().includes(search.toLowerCase()) || String(t.desc).toLowerCase().includes(search.toLowerCase());
+                return matchCat && matchSearch;
+            });
+
+            // Cập nhật số lượng
+            document.getElementById('count-all').innerText = allTools.length;
+            document.getElementById('count-cad').innerText = allTools.filter(t => t.category === 'cad').length;
+            document.getElementById('count-lisp').innerText = allTools.filter(t => t.category === 'lisp').length;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-full py-12 text-center text-slate-500 font-display text-sm border border-dashed border-border-light dark:border-border-dark">No tools found matching your criteria.</div>`;
+                return;
+            }
+
+            [...filtered].reverse().forEach(tool => {
+                // Format ngày
+                let dateStr = 'Recently';
+                if (tool.createdAt) {
+                    const d = new Date(tool.createdAt);
+                    dateStr = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+                }
+
+                container.innerHTML += `
+          <div class="group relative bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark p-6 transition-all hover:border-primary/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div class="flex items-start gap-5 flex-1">
+              <div class="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark text-slate-400 group-hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-2xl">${tool.category === 'lisp' ? 'code' : 'view_in_ar'}</span>
+              </div>
+              <div>
+                <h3 class="font-display font-bold text-lg tracking-tight group-hover:text-primary transition-colors uppercase">${tool.title}</h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">${tool.desc}</p>
+                <div class="flex gap-2 mt-3">
+                  <span class="text-[9px] px-2 py-0.5 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400">#${(tool.category || 'CAD').toUpperCase()}</span>
+                  <span class="text-[9px] px-2 py-0.5 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">history</span> ${dateStr}</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-3 sm:flex-col lg:flex-row flex-shrink-0 w-full sm:w-auto">
+              <button onclick="alert('Guide:\\n' + decodeURIComponent('${encodeURIComponent(tool.guide || 'No guide.')}'))" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-primary hover:text-primary transition-colors">
+                Guide
+              </button>
+              <button onclick="window.open('${tool.filename}', '_blank')" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-primary hover:text-primary transition-colors flex items-center justify-center gap-1">
+                <span class="material-symbols-outlined text-sm">code</span> VIEW SOURCE
+              </button>
+              <button onclick="downloadTool(event, '${tool.filename}', '${tool.title}')" class="flex-1 px-5 py-3 sm:py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-display font-bold text-[10px] uppercase tracking-widest hover:bg-primary dark:hover:bg-primary dark:hover:text-white transition-colors flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-sm">download</span> GET
+              </button>
+            </div>
+          </div>
+        `;
+            });
+        }
+
+        // Lọc theo Category
+        function filterByCategory(cat, element) {
+            currentCategory = cat;
+            document.querySelectorAll('.category-link').forEach(el => {
+                el.classList.remove('bg-primary/5', 'border-r-4', 'border-primary', 'text-primary');
+                el.classList.add('hover:bg-slate-100', 'dark:hover:bg-white/5');
+            });
+            element.classList.remove('hover:bg-slate-100', 'dark:hover:bg-white/5');
+            element.classList.add('bg-primary/5', 'border-r-4', 'border-primary', 'text-primary');
+            renderTools(document.getElementById('searchInput').value);
+        }
+
+        function searchTools() {
+            renderTools(document.getElementById('searchInput').value);
+        }
+
+        // Tải File lisp tự động
+        async function downloadTool(event, url, title) {
+            if (url.startsWith('http')) {
+                const btn = event.currentTarget;
+                const ogHtml = btn.innerHTML;
+                try {
+                    btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> FETCHING...';
+                    btn.disabled = true;
+
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error('Network error');
+                    const text = await response.text();
+
+                    const blob = new Blob([text], { type: 'text/plain' });
+                    const blobUrl = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.target = '_blank';
+                    a.download = title + '.lsp';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(blobUrl);
+
+                    btn.innerHTML = ogHtml;
+                    btn.disabled = false;
+                } catch (e) {
+                    showToast("Lỗi tải file: " + e.message, "error");
+                    btn.innerHTML = ogHtml;
+                    btn.disabled = false;
+                }
+            } else {
+                showToast("Link tải không hợp lệ", "error");
             }
         }
 
-        window.showToast = function (message, type) {
-            const toast = document.getElementById('toast');
-            toast.className = type;
-            toast.innerText = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+        // Logic Upload Add Tool
+        document.getElementById('addToolForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmit');
+            const ogText = btn.innerHTML;
+            btn.innerHTML = `<span class="material-symbols-outlined text-lg animate-spin">sync</span> <span>UPLOADING TO GITHUB...</span>`;
+            btn.disabled = true;
+
+            const newTool = {
+                title: document.getElementById('toolTitle').value,
+                category: document.getElementById('toolCategory').value,
+                desc: document.getElementById('toolDesc').value,
+                guide: document.getElementById('toolGuide').value,
+                toolCode: document.getElementById('toolCode').value
+            };
+
+            if (VERCEL_API_URL !== "") {
+                try {
+                    const res = await fetch(VERCEL_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newTool)
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || 'Upload failed');
+
+                    allTools.push(data.tool);
+                    showToast("Upload To GitHub Success!", "success");
+                    hideSubmissionForm();
+                    document.getElementById('addToolForm').reset();
+                    renderTools();
+                } catch (err) {
+                    console.error(err);
+                    showToast("Error: " + err.message, "error");
+                }
+            } else {
+                // Fallback Local
+                const dummyUrl = "#";
+                const locTool = { id: Date.now(), ...newTool, filename: dummyUrl, createdAt: new Date().toISOString() };
+                allTools.push(locTool);
+                localStorage.setItem('lisp_db', JSON.stringify(allTools));
+                showToast("Saved Locally (API link not set)", "success");
+                hideSubmissionForm();
+                document.getElementById('addToolForm').reset();
+                renderTools();
+            }
+
+            btn.innerHTML = ogText;
+            btn.disabled = false;
+        });
+
+        // Xử lý kéo thả file
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) readFileContent(file);
         }
 
-        // Khởi chạy App
-        initApp();
-    </script>
+        function handleFileDrop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('border-primary');
+            const file = event.dataTransfer.files[0];
+            if (file) readFileContent(file);
+        }
 
+        function readFileContent(file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('toolCode').value = e.target.result;
+                showToast("File loaded successfully!", "success");
+            };
+            reader.onerror = function () {
+                showToast("Error reading file", "error");
+            };
+            reader.readAsText(file);
+        }
+
+        // Chạy app
+        window.onload = initApp;
+    </script>
 </body>
 
 </html>
-
