@@ -273,6 +273,38 @@
         </form>
     </main>
 
+    <!-- VIEW SOURCE MODAL -->
+    <div id="viewSourceModal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div
+            class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark w-full max-w-4xl h-[90vh] flex flex-col shadow-2xl">
+            <div
+                class="px-6 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-slate-50 dark:bg-black/50">
+                <h3 id="viewSourceTitle"
+                    class="font-display font-bold text-lg uppercase tracking-wider text-slate-800 dark:text-slate-200">
+                    Source Code</h3>
+                <div class="flex items-center gap-3">
+                    <button onclick="copySourceCode()" id="copySourceBtn"
+                        class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-display text-[10px] tracking-widest uppercase transition-colors flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[14px]">content_copy</span> COPY
+                    </button>
+                    <button onclick="closeSourceModal()"
+                        class="text-slate-500 hover:text-primary transition-colors flex">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 bg-[#0d1117] relative">
+                <div id="viewSourceLoading"
+                    class="absolute inset-0 flex flex-col items-center justify-center bg-[#0d1117] z-10 hidden">
+                    <span class="material-symbols-outlined text-4xl animate-spin text-primary">sync</span>
+                    <p class="mt-4 font-display text-xs tracking-widest uppercase text-slate-400">FETCHING SOURCE...</p>
+                </div>
+                <pre><code id="viewSourceContent" class="font-display text-xs text-slate-300 leading-relaxed tabular-nums whitespace-pre-wrap"></code></pre>
+            </div>
+        </div>
+    </div>
+
     <!-- FOOTER -->
     <footer
         class="fixed bottom-0 left-0 w-full z-40 bg-background-light dark:bg-background-dark border-t-2 border-primary border-b-2 border-b-primary shadow-[0_-10px_30px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_30px_rgba(0,0,0,0.8)]">
@@ -376,7 +408,7 @@
               <button onclick="alert('Guide:\\n' + decodeURIComponent('${encodeURIComponent(tool.guide || 'No guide.')}'))" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-primary hover:text-primary transition-colors">
                 Guide
               </button>
-              <button onclick="window.open('${tool.filename}', '_blank')" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-primary hover:text-primary transition-colors flex items-center justify-center gap-1">
+              <button onclick="openSourceModal('${tool.filename}', '${tool.title}')" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-primary hover:text-primary transition-colors flex items-center justify-center gap-1">
                 <span class="material-symbols-outlined text-sm">code</span> VIEW SOURCE
               </button>
               <button onclick="downloadTool(event, '${tool.filename}', '${tool.title}')" class="flex-1 px-5 py-3 sm:py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-display font-bold text-[10px] uppercase tracking-widest hover:bg-primary dark:hover:bg-primary dark:hover:text-white transition-colors flex items-center justify-center gap-2">
@@ -417,16 +449,39 @@
                     if (!response.ok) throw new Error('Network error');
                     const text = await response.text();
 
-                    const blob = new Blob([text], { type: 'text/plain' });
-                    const blobUrl = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = blobUrl;
-                    a.target = '_blank';
-                    a.download = title + '.lsp';
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(blobUrl);
+                    // Native Windows File Save Dialog via showSaveFilePicker API
+                    if (window.showSaveFilePicker) {
+                        try {
+                            const handle = await window.showSaveFilePicker({
+                                suggestedName: title + '.lsp',
+                                types: [{
+                                    description: 'Lisp File',
+                                    accept: { 'text/plain': ['.lsp'] },
+                                }],
+                            });
+                            const writable = await handle.createWritable();
+                            await writable.write(text);
+                            await writable.close();
+                            showToast("File saved successfully!", "success");
+                        } catch (err) {
+                            // User cancelled the dialog, do nothing
+                            if (err.name !== 'AbortError') {
+                                throw err;
+                            }
+                        }
+                    } else {
+                        // Fallback automatically save to default Downloads folder
+                        const blob = new Blob([text], { type: 'text/plain' });
+                        const blobUrl = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = blobUrl;
+                        a.target = '_blank';
+                        a.download = title + '.lsp';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(blobUrl);
+                    }
 
                     btn.innerHTML = ogHtml;
                     btn.disabled = false;
@@ -437,6 +492,59 @@
                 }
             } else {
                 showToast("Link tải không hợp lệ", "error");
+            }
+        }
+
+        // Modal logic cho View Source
+        async function openSourceModal(url, title) {
+            document.getElementById('viewSourceTitle').innerText = title;
+            const contentEl = document.getElementById('viewSourceContent');
+            const loadingEl = document.getElementById('viewSourceLoading');
+            const modal = document.getElementById('viewSourceModal');
+
+            contentEl.innerText = "";
+            loadingEl.classList.remove('hidden');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network error');
+                const text = await response.text();
+                contentEl.innerText = text;
+            } catch (e) {
+                contentEl.innerText = "Error loading source code: " + e.message;
+            } finally {
+                loadingEl.classList.add('hidden');
+            }
+        }
+
+        function closeSourceModal() {
+            const modal = document.getElementById('viewSourceModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        async function copySourceCode() {
+            const text = document.getElementById('viewSourceContent').innerText;
+            if (!text) return;
+            try {
+                await navigator.clipboard.writeText(text);
+                const btn = document.getElementById('copySourceBtn');
+                const og = btn.innerHTML;
+                btn.innerHTML = `<span class="material-symbols-outlined text-[14px]">check</span> COPIED`;
+                btn.classList.replace('bg-slate-800', 'bg-emerald-600');
+                btn.classList.replace('hover:bg-slate-700', 'hover:bg-emerald-500');
+                showToast("Source code copied to clipboard!", "success");
+                setTimeout(() => {
+                    btn.innerHTML = og;
+                    btn.classList.replace('bg-emerald-600', 'bg-slate-800');
+                    btn.classList.replace('hover:bg-emerald-500', 'hover:bg-slate-700');
+                }, 2000);
+            } catch (e) {
+                showToast("Failed to copy", "error");
             }
         }
 
