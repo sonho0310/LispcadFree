@@ -5,6 +5,9 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>LispCad Free Platform</title>
+    <link rel="icon" type="image/png" href="logo.png?v=2" />
+    <link rel="shortcut icon" href="logo.png?v=2" type="image/png" />
+    <link rel="apple-touch-icon" href="logo.png?v=2" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
@@ -84,11 +87,16 @@
                 </div>
             </div>
             <div class="flex items-center gap-6">
+                <div class="flex items-center gap-2 text-[11px] font-display font-bold bg-slate-100 dark:bg-slate-800 rounded-full px-3 py-1">
+                    <button onclick="setLang('vn')" id="lang-vn" class="text-slate-400 hover:text-primary transition-colors">VN</button>
+                    <span class="text-slate-300 dark:text-slate-700">|</span>
+                    <button onclick="setLang('en')" id="lang-en" class="text-primary transition-colors">EN</button>
+                </div>
                 <button class="p-2 text-slate-400 hover:text-primary transition-colors" onclick="toggleDarkMode()">
                     <span class="material-symbols-outlined text-xl">contrast</span>
                 </button>
                 <button onclick="showSubmissionForm()"
-                    class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2 text-[11px] font-display font-bold uppercase tracking-widest hover:bg-primary dark:hover:bg-primary dark:hover:text-white transition-all shadow-sm">
+                    id="btn-submit-tool" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2 text-[11px] font-display font-bold uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 dark:hover:text-slate-900 transition-all shadow-sm">
                     SUBMIT TOOL
                 </button>
             </div>
@@ -107,12 +115,12 @@
                 </h2>
                 <nav class="space-y-2" id="category-nav">
                     <a href="#" onclick="filterByCategory('all', this)"
-                        class="category-link flex items-center justify-between px-4 py-3 bg-primary/5 border-r-4 border-primary text-primary group transition-all mb-4">
+                        class="category-link flex items-center justify-between px-4 py-3 bg-slate-200 dark:bg-slate-800 border-r-4 border-slate-400 group transition-all mb-4">
                         <div class="flex items-center gap-4">
                             <span class="material-symbols-outlined text-2xl">apps</span>
                             <span class="font-display text-xs font-bold tracking-widest uppercase">All Tools</span>
                         </div>
-                        <span class="text-sm font-mono opacity-60" id="count-all">0</span>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-all">0</span>
                     </a>
                     <a href="#" onclick="filterByCategory('cad', this)"
                         class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
@@ -123,7 +131,7 @@
                                 class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">CAD
                                 General</span>
                         </div>
-                        <span class="text-sm font-mono opacity-40" id="count-cad">0</span>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-cad">0</span>
                     </a>
                     <a href="#" onclick="filterByCategory('lisp', this)"
                         class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
@@ -134,7 +142,7 @@
                                 class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Lisp
                                 Scripts</span>
                         </div>
-                        <span class="text-sm font-mono opacity-40" id="count-lisp">0</span>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-lisp">0</span>
                     </a>
                 </nav>
             </div>
@@ -169,14 +177,18 @@
     </main>
 
     <!-- SUBMISSION PAGE (Hidden by default) -->
-    <main id="submission-form" class="max-w-[1000px] mx-auto px-6 py-12 hidden">
-        <header class="mb-12 cursor-pointer" onclick="hideSubmissionForm()">
-            <div
-                class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-900 border border-border-light dark:border-border-dark hover:border-primary transition-colors mb-4 group">
+    <main id="submission-form" class="max-w-[1000px] mx-auto px-6 py-12 hidden relative">
+        <div class="sticky top-24 z-[90] inline-block mb-10 select-none">
+            <div onclick="hideSubmissionForm()"
+                class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-900 border border-border-light dark:border-border-dark hover:border-primary transition-colors cursor-pointer group shadow-sm">
                 <span
                     class="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
-                <span class="text-[10px] font-display font-bold uppercase tracking-[0.2em]">Back to Repository</span>
+                <span
+                    class="text-[10px] font-display font-bold uppercase tracking-[0.2em] text-slate-900 dark:text-slate-100">Back
+                    to Repository</span>
             </div>
+        </div>
+        <header class="mb-12">
             <h1 class="text-4xl font-display font-bold tracking-tight mb-2 uppercase">Submit New Tool</h1>
             <p class="text-slate-500 dark:text-slate-400 font-display text-sm">Share your Lisp code directly to the
                 public repository.</p>
@@ -306,12 +318,11 @@
     </div>
 
     <!-- FOOTER -->
-    <footer
-        class="fixed bottom-0 left-0 w-full z-40 bg-background-light dark:bg-background-dark border-t-2 border-primary border-b-2 border-b-primary shadow-[0_-10px_30px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_30px_rgba(0,0,0,0.8)]">
+    <footer class="fixed bottom-0 left-0 w-full z-40 bg-transparent pointer-events-none">
         <div
             class="max-w-[1400px] mx-auto px-6 py-4 flex justify-between items-center text-[10px] font-display font-bold uppercase tracking-widest text-slate-900 dark:text-slate-100">
-            <span>LISP CAD FREE PLATFORM</span>
-            <span class="text-slate-500 font-mono">© 2026. OPEN SOURCE.</span>
+            <span id="txt-footer-platform" class="drop-shadow-md">LISP CAD FREE PLATFORM</span>
+            <span class="text-slate-500 font-mono drop-shadow-md" id="txt-footer-copy">© 2026. OPEN SOURCE.</span>
         </div>
     </footer>
 
@@ -377,7 +388,8 @@
             document.getElementById('count-lisp').innerText = allTools.filter(t => t.category === 'lisp').length;
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="col-span-full py-12 text-center text-slate-500 font-display text-sm border border-dashed border-border-light dark:border-border-dark">No tools found matching your criteria.</div>`;
+                const dict = (typeof i18n !== 'undefined' && i18n[currentLang]) ? i18n[currentLang] : { txtNoTools: 'No tools found matching your criteria.' };
+                container.innerHTML = `<div class="col-span-full py-12 text-center text-slate-500 font-display text-sm border border-dashed border-border-light dark:border-border-dark">${dict.txtNoTools}</div>`;
                 return;
             }
 
@@ -396,7 +408,7 @@
                 <span class="material-symbols-outlined text-2xl">${tool.category === 'lisp' ? 'code' : 'view_in_ar'}</span>
               </div>
               <div>
-                <h3 class="font-display font-bold text-lg tracking-tight group-hover:text-primary transition-colors uppercase">${tool.title}</h3>
+                <h3 class="font-display font-bold text-lg tracking-tight group-hover:text-primary transition-colors uppercase">${tool.title.replace(/'/g, "\\'")}</h3>
                 <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">${tool.desc}</p>
                 <div class="flex gap-2 mt-3">
                   <span class="text-[9px] px-2 py-0.5 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400">#${(tool.category || 'CAD').toUpperCase()}</span>
@@ -405,14 +417,14 @@
               </div>
             </div>
             <div class="flex gap-3 sm:flex-col lg:flex-row flex-shrink-0 w-full sm:w-auto">
-              <button onclick="alert('Guide:\\n' + decodeURIComponent('${encodeURIComponent(tool.guide || 'No guide.')}'))" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-primary hover:text-primary transition-colors">
-                Guide
+              <button onclick="openGuideModal('${tool.title.replace(/'/g, "\\'")}', '${encodeURIComponent(tool.guide || '')}')" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
+                ${dict.btnGuide || 'Guide'}
               </button>
-              <button onclick="openSourceModal('${tool.filename}', '${tool.title}')" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-primary hover:text-primary transition-colors flex items-center justify-center gap-1">
-                <span class="material-symbols-outlined text-sm">code</span> VIEW SOURCE
+              <button onclick="openSourceModal('${tool.filename}', '${tool.title.replace(/'/g, "\\'")}')" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center justify-center gap-1">
+                <span class="material-symbols-outlined text-sm">code</span> ${dict.btnViewSource || 'VIEW SOURCE'}
               </button>
-              <button onclick="downloadTool(event, '${tool.filename}', '${tool.title}')" class="flex-1 px-5 py-3 sm:py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-display font-bold text-[10px] uppercase tracking-widest hover:bg-primary dark:hover:bg-primary dark:hover:text-white transition-colors flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-sm">download</span> GET
+              <button onclick="downloadTool(event, '${tool.filename}', '${tool.title.replace(/'/g, "\\'")}')" class="flex-1 px-5 py-3 sm:py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-display font-bold text-[10px] uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 dark:hover:text-slate-900 transition-colors flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-sm">download</span> ${dict.btnGet || 'GET'}
               </button>
             </div>
           </div>
@@ -424,11 +436,11 @@
         function filterByCategory(cat, element) {
             currentCategory = cat;
             document.querySelectorAll('.category-link').forEach(el => {
-                el.classList.remove('bg-primary/5', 'border-r-4', 'border-primary', 'text-primary');
+                el.classList.remove('bg-slate-200', 'dark:bg-slate-800', 'border-r-4', 'border-slate-400');
                 el.classList.add('hover:bg-slate-100', 'dark:hover:bg-white/5');
             });
             element.classList.remove('hover:bg-slate-100', 'dark:hover:bg-white/5');
-            element.classList.add('bg-primary/5', 'border-r-4', 'border-primary', 'text-primary');
+            element.classList.add('bg-slate-200', 'dark:bg-slate-800', 'border-r-4', 'border-slate-400');
             renderTools(document.getElementById('searchInput').value);
         }
 
@@ -462,7 +474,7 @@
                             const writable = await handle.createWritable();
                             await writable.write(text);
                             await writable.close();
-                            showToast("File saved successfully!", "success");
+                            showToast(typeof i18n!=='undefined' ? i18n[currentLang].toastFileLoaded : "File saved successfully!", "success");
                         } catch (err) {
                             // User cancelled the dialog, do nothing
                             if (err.name !== 'AbortError') {
@@ -486,13 +498,28 @@
                     btn.innerHTML = ogHtml;
                     btn.disabled = false;
                 } catch (e) {
-                    showToast("Lỗi tải file: " + e.message, "error");
+                    showToast((typeof i18n!=='undefined' ? i18n[currentLang].toastFetchFail : "Lỗi tải file: ") + e.message, "error");
                     btn.innerHTML = ogHtml;
                     btn.disabled = false;
                 }
             } else {
-                showToast("Link tải không hợp lệ", "error");
+                showToast(typeof i18n!=='undefined' ? i18n[currentLang].toastInvalidLink : "Link tải không hợp lệ", "error");
             }
+        }
+
+        // Modal logic cho Guide
+        function openGuideModal(title, guideText) {
+            document.getElementById('viewSourceTitle').innerText = title + " - Guide";
+            const contentEl = document.getElementById('viewSourceContent');
+            const loadingEl = document.getElementById('viewSourceLoading');
+            const modal = document.getElementById('viewSourceModal');
+
+            loadingEl.classList.add('hidden');
+            contentEl.innerText = guideText ? decodeURIComponent(guideText) : 'No guide provided.';
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
         }
 
         // Modal logic cho View Source
@@ -575,7 +602,7 @@
                     if (!res.ok) throw new Error(data.error || 'Upload failed');
 
                     allTools.push(data.tool);
-                    showToast("Upload To GitHub Success!", "success");
+                    showToast(typeof i18n!=='undefined' ? i18n[currentLang].toastUploadSuccess : "Upload To GitHub Success!", "success");
                     hideSubmissionForm();
                     document.getElementById('addToolForm').reset();
                     renderTools();
@@ -589,7 +616,7 @@
                 const locTool = { id: Date.now(), ...newTool, filename: dummyUrl, createdAt: new Date().toISOString() };
                 allTools.push(locTool);
                 localStorage.setItem('lisp_db', JSON.stringify(allTools));
-                showToast("Saved Locally (API link not set)", "success");
+                showToast(typeof i18n!=='undefined' ? i18n[currentLang].toastSaveLocal : "Saved Locally (API link not set)", "success");
                 hideSubmissionForm();
                 document.getElementById('addToolForm').reset();
                 renderTools();
@@ -624,8 +651,167 @@
             reader.readAsText(file);
         }
 
+        
+        // -- LANGUAGE TOGGLE LOGIC --
+        const i18n = {
+            en: {
+                txtHeaderSub: "All Best Things",
+                btnSubmitTool: "SUBMIT TOOL",
+                txtCategories: "Categories",
+                catAll: "All Tools",
+                catCad: "CAD General",
+                catLisp: "Lisp Scripts",
+                txtSearch: "Search for tool name or function...",
+                txtSyncing: "SYNCING REPOSITORY...",
+                txtNoTools: "No tools found matching your criteria.",
+                btnGuide: "Guide",
+                btnViewSource: "VIEW SOURCE",
+                btnGet: "GET",
+                txtSubmitTitle: "Submit New Tool",
+                txtSubmitDesc: "Share your Lisp code directly to the public repository.",
+                txtBackRepo: "Back to Repository",
+                txtStep1: "Source Identity",
+                txtToolName: "Tool Name *",
+                phToolName: "e.g. TL - Total Length",
+                txtCategoryLabel: "Category",
+                optCad: "CAD General",
+                optLisp: "Lisp Script",
+                txtTechDesc: "Technical Description *",
+                phTechDesc: "Describe what this lisp does...",
+                txtUsageGuide: "Usage Guide",
+                phUsageGuide: "Command to run, how to use it...",
+                txtStep2: "Source Code Deployment *",
+                phToolCode: ";; Paste Lisp Tool code here...\n(defun c:example ()\n  (princ \"\\nHello World\")\n)\n",
+                txtPasteRaw: "PASTE RAW CODE",
+                txtOr: "OR",
+                txtDropSelect: "DROP/SELECT .LSP FILE",
+                btnExecuteSubmit: "EXECUTE SUBMISSION TO GITHUB",
+                txtSourceModalTitle: "Source Code",
+                btnCopySrc: "COPY",
+                txtFetchingSrc: "FETCHING SOURCE...",
+                txtCopied: "COPIED",
+                txtFooterPlatform: "LISP CAD FREE PLATFORM",
+                txtFooterCopy: "© 2026. OPEN SOURCE.",
+                toastUploadSuccess: "Upload To GitHub Success!",
+                toastSaveLocal: "Saved Locally (API link not set)",
+                toastFileLoaded: "File loaded successfully!",
+                toastErrorRead: "Error reading file",
+                toastCopied: "Source code copied to clipboard!",
+                toastCopyFail: "Failed to copy",
+                toastFetchFail: "Error loading file: ",
+                toastInvalidLink: "Invalid download link"
+            },
+            vn: {
+                txtHeaderSub: "Mọi Tiện Ích Tốt Nhất",
+                btnSubmitTool: "GỬI TOOL",
+                txtCategories: "Danh mục",
+                catAll: "Tất Cả Công Cụ",
+                catCad: "CAD Chung",
+                catLisp: "Lisp Scripts",
+                txtSearch: "Tìm kiếm theo tên hoặc chức năng...",
+                txtSyncing: "ĐANG ĐỒNG BỘ DỮ LIỆU...",
+                txtNoTools: "Không tìm thấy công cụ phù hợp.",
+                btnGuide: "HƯỚNG DẪN",
+                btnViewSource: "XEM MÃ NGUỒN",
+                btnGet: "TẢI VỀ",
+                txtSubmitTitle: "Đăng Công Cụ Mới",
+                txtSubmitDesc: "Chia sẻ mã lisp của bạn lên thư viện công cộng.",
+                txtBackRepo: "Quay Về Thư Viện",
+                txtStep1: "Thông tin chung",
+                txtToolName: "Tên Công Cụ *",
+                phToolName: "VD: TL - Tổng chiều dài",
+                txtCategoryLabel: "Danh Mục",
+                optCad: "CAD Chung",
+                optLisp: "Mã Lisp",
+                txtTechDesc: "Mô tả kỹ thuật *",
+                phTechDesc: "Mô tả chi tiết những gì lisp này thực hiện...",
+                txtUsageGuide: "Hướng dẫn sử dụng",
+                phUsageGuide: "Lệnh chạy, phím tắt, ghi chú cách dùng...",
+                txtStep2: "Triển Khai Mã Nguồn *",
+                phToolCode: ";; Dán mã nguồn Lisp vào đây...\n(defun c:vidu ()\n  (princ \"\\nChao the gioi\")\n)\n",
+                txtPasteRaw: "DÁN MÃ NGUỒN",
+                txtOr: "HOẶC",
+                txtDropSelect: "KÉO/CHỌN FILE .LSP",
+                btnExecuteSubmit: "THỰC THI TẢI LÊN GITHUB",
+                txtSourceModalTitle: "Mã Nguồn Của Tool",
+                btnCopySrc: "SAO CHÉP",
+                txtFetchingSrc: "ĐANG TẢI MÃ NGUỒN...",
+                txtCopied: "ĐÃ SAO CHÉP",
+                txtFooterPlatform: "NỀN TẢNG LISP CAD MIỄN PHÍ",
+                txtFooterCopy: "© 2026. MÃ NGUỒN MỞ.",
+                toastUploadSuccess: "Tải lên GitHub thành công!",
+                toastSaveLocal: "Đã lưu cục bộ (chưa cài link API)",
+                toastFileLoaded: "Đã tải file thành công!",
+                toastErrorRead: "Lỗi đọc file",
+                toastCopied: "Đã copy mã nguồn!",
+                toastCopyFail: "Lỗi sao chép",
+                toastFetchFail: "Lỗi tải file: ",
+                toastInvalidLink: "Link tải về không hợp lệ"
+            }
+        };
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-en').classList.remove('text-primary');
+            document.getElementById('lang-vn').classList.remove('text-primary');
+            document.getElementById('lang-en').classList.add('text-slate-400');
+            document.getElementById('lang-vn').classList.add('text-slate-400');
+            
+            document.getElementById(`lang-${lang}`).classList.add('text-primary');
+            document.getElementById(`lang-${lang}`).classList.remove('text-slate-400');
+            
+            renderTools(document.getElementById('searchInput').value);
+            
+            const dict = i18n[lang];
+            try{ document.querySelector('span.text-\\[9px\\].font-mono').innerText = dict.txtHeaderSub; } catch(e){}
+            try{ document.querySelector('#btn-submit-tool').innerText = dict.btnSubmitTool; } catch(e){}
+            try{ document.querySelector('#txt-footer-platform').innerText = dict.txtFooterPlatform; } catch(e){}
+            try{ document.querySelector('#txt-footer-copy').innerText = dict.txtFooterCopy; } catch(e){}
+            try{ document.querySelector('#loading-state p').innerText = dict.txtSyncing; } catch(e){}
+            
+            try{ document.querySelector('.category-link[onclick*="all"] span.font-display').innerText = dict.catAll; } catch(e){}
+            try{ document.querySelector('.category-link[onclick*="cad"] span.font-display').innerText = dict.catCad; } catch(e){}
+            try{ document.querySelector('.category-link[onclick*="lisp"] span.font-display').innerText = dict.catLisp; } catch(e){}
+            try{ document.querySelector('h2.font-display.text-\\[10px\\]').innerHTML = `<span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span> ${dict.txtCategories}`; } catch(e){}
+            try{ document.querySelector('#searchInput').placeholder = dict.txtSearch; } catch(e){}
+            
+            try{ document.querySelector('#submission-form h1').innerText = dict.txtSubmitTitle; } catch(e){}
+            try{ document.querySelector('#submission-form header p').innerText = dict.txtSubmitDesc; } catch(e){}
+            try{ document.querySelector('#submission-form div[onclick*="hideSubmissionForm"] span.text-\\[10px\\]').innerText = dict.txtBackRepo; } catch(e){}
+            
+            try {
+                const labels = document.querySelectorAll('#submission-form label');
+                if(labels.length >= 5) {
+                    labels[0].innerText = dict.txtToolName;
+                    labels[1].innerText = dict.txtCategoryLabel;
+                    labels[2].innerText = dict.txtTechDesc;
+                    labels[3].innerText = dict.txtUsageGuide;
+                    labels[4].innerHTML = `<span class="material-symbols-outlined text-[14px]">upload_file</span> ${dict.txtDropSelect}`;
+                }
+            } catch(e){}
+            
+            try{ document.querySelector('#submission-form h2').innerText = dict.txtStep1; } catch(e){}
+            try{ document.querySelectorAll('#submission-form h2')[1].innerText = dict.txtStep2; } catch(e){}
+            try{ document.querySelector('#toolTitle').placeholder = dict.phToolName; } catch(e){}
+            try{ document.querySelector('#toolDesc').placeholder = dict.phTechDesc; } catch(e){}
+            try{ document.querySelector('#toolGuide').placeholder = dict.phUsageGuide; } catch(e){}
+            try{ document.querySelector('#toolCode').placeholder = dict.phToolCode; } catch(e){}
+            try{ document.querySelector('#btnSubmit span:nth-child(2)').innerText = dict.btnExecuteSubmit; } catch(e){}
+            
+            try{ document.querySelector('#toolCategory option[value="cad"]').innerText = dict.optCad; } catch(e){}
+            try{ document.querySelector('#toolCategory option[value="lisp"]').innerText = dict.optLisp; } catch(e){}
+            
+            try{ document.querySelector('.absolute.top-3.right-4 span:nth-child(1)').innerText = dict.txtPasteRaw; } catch(e){}
+            try{ document.querySelector('.absolute.top-3.right-4 span:nth-child(2)').innerText = dict.txtOr; } catch(e){}
+            
+            try{ document.querySelector('#viewSourceModal h3').innerText = dict.txtSourceModalTitle; } catch(e){}
+            try{ document.querySelector('#copySourceBtn').innerHTML = `<span class="material-symbols-outlined text-[14px]">content_copy</span> ${dict.btnCopySrc}`; } catch(e){}
+            try{ document.querySelector('#viewSourceLoading p').innerText = dict.txtFetchingSrc; } catch(e){}
+        }
+
         // Chạy app
-        window.onload = initApp;
+        window.onload = () => { initApp(); setLang('vn'); };
+
     </script>
 </body>
 
