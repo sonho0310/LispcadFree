@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>LispCad Free Platform</title>
+    <title>Nền Tảng Công Cụ Miễn Phí</title>
     <link rel="icon" type="image/png" href="logo.png?v=2" />
     <link rel="shortcut icon" href="logo.png?v=2" type="image/png" />
     <link rel="apple-touch-icon" href="logo.png?v=2" />
@@ -80,7 +80,7 @@
                     <div class="w-8 h-8 flex items-center justify-center bg-primary text-white font-bold hidden"
                         style="display: none;">CAD</div>
                     <div class="flex flex-col leading-none">
-                        <span class="font-display font-bold tracking-tighter text-xl uppercase">Lisp Cad</span>
+                        <span class="font-display font-bold tracking-tighter text-xl uppercase">Công Cụ</span>
                         <span class="text-[9px] font-mono tracking-[0.3em] text-primary font-bold">Mọi Tiện Ích Tốt Nhất</span>
                     </div>
                 </div>
@@ -104,7 +104,7 @@
             <div class="sticky top-24 pb-8">
                 <h2
                     class="font-display text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 mb-6 flex items-center gap-2">
-                    <span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span>Danh mục</h2>
+                    <span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span>Autocad</h2>
                 <nav class="space-y-2" id="category-nav">
                     <a href="#" onclick="filterByCategory('all', this)"
                         class="category-link flex items-center justify-between px-4 py-3 bg-slate-200 dark:bg-slate-800 border-r-4 border-slate-400 group transition-all mb-4">
@@ -135,7 +135,37 @@
                         <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-lisp">0</span>
                     </a>
                 </nav>
-            </div>
+                <h2
+                    class="font-display text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 mt-10 mb-6 flex items-center gap-2">
+                    <span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span>Revit
+                </h2>
+                <nav class="space-y-2" id="category-revit-nav">
+                    <a href="#" onclick="filterByCategory('revit_all', this)"
+                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">domain</span>
+                            <span class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Tất Cả Revit</span>
+                        </div>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-revit_all">0</span>
+                    </a>
+                    <a href="#" onclick="filterByCategory('revit_addin', this)"
+                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">extension</span>
+                            <span class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Revit Addin</span>
+                        </div>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-revit_addin">0</span>
+                    </a>
+                    <a href="#" onclick="filterByCategory('revit_dynamo', this)"
+                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">account_tree</span>
+                            <span class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Revit Dynamo</span>
+                        </div>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-revit_dynamo">0</span>
+                    </a>
+                </nav>
+</div>
         </aside>
 
         <!-- Content List -->
@@ -205,8 +235,14 @@
                             class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Danh Mục</label>
                         <select id="toolCategory"
                             class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary">
-                            <option value="cad">CAD Chung</option>
-                            <option value="lisp">Mã Lisp</option>
+                            <optgroup label="AutoCAD">
+                                <option value="cad">CAD Chung</option>
+                                <option value="lisp">Mã Lisp</option>
+                            </optgroup>
+                            <optgroup label="Revit">
+                                <option value="revit_addin">Revit Addin</option>
+                                <option value="revit_dynamo">Revit Dynamo</option>
+                            </optgroup>
                         </select>
                     </div>
                     <div class="md:col-span-2 space-y-2">
@@ -233,7 +269,7 @@
                 <div class="flex items-center justify-between mb-8">
                     <div class="flex items-center gap-3">
                         <span class="font-display text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1">02</span>
-                        <h2 class="font-display font-bold uppercase tracking-widest text-sm">Triển Khai Mã Nguồn *</h2>
+                        <h2 class="font-display font-bold uppercase tracking-widest text-sm">Triển Khai Mã Nguồn / Cài Đặt *</h2>
                     </div>
                 </div>
                 <div class="relative group">
@@ -241,10 +277,10 @@
                         ondragover="event.preventDefault(); this.classList.add('border-primary');"
                         ondragleave="this.classList.remove('border-primary');" ondrop="handleFileDrop(event);"
                         class="w-full bg-[#0d1117] text-slate-300 font-display text-xs p-6 pt-10 focus:outline-none border border-border-dark focus:border-primary leading-relaxed custom-scrollbar transition-colors"
-                        placeholder=";; Dán mã nguồn Lisp vào đây...&#10;(defun c:vidu ()&#10;  (princ &quot;\nChao the gioi&quot;)&#10;)&#10;"
+                        placeholder=";; Dán mã nguồn Lisp vào đây...&#10;Hoặc dán Link Google Drive tải Revit Addin vào đây..."
                         rows="12"></textarea>
                     <div class="absolute top-3 right-4 flex items-center gap-4 text-[10px] font-display text-slate-500">
-                        <span>DÁN MÃ NGUỒN</span>
+                        <span>DÁN MÃ NGUỒN HOẶC LINK TẢI</span>
                         <span>HOẶC</span>
                         <label for="fileUpload"
                             class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-white px-3 py-1 transition-colors flex items-center gap-2">
@@ -357,15 +393,22 @@
             container.innerHTML = '';
 
             let filtered = allTools.filter(t => {
-                const matchCat = currentCategory === 'all' || t.category === currentCategory;
+                let matchCat = false;
+                if (currentCategory === 'all') matchCat = true;
+                else if (currentCategory === 'revit_all') matchCat = t.category && t.category.startsWith('revit_');
+                else matchCat = t.category === currentCategory;
                 const matchSearch = String(t.title).toLowerCase().includes(search.toLowerCase()) || String(t.desc).toLowerCase().includes(search.toLowerCase());
                 return matchCat && matchSearch;
             });
 
             // Cập nhật số lượng
+            const revitTools = allTools.filter(t => t.category && t.category.startsWith('revit_'));
             document.getElementById('count-all').innerText = allTools.length;
             document.getElementById('count-cad').innerText = allTools.filter(t => t.category === 'cad').length;
             document.getElementById('count-lisp').innerText = allTools.filter(t => t.category === 'lisp').length;
+            document.getElementById('count-revit_all').innerText = revitTools.length;
+            document.getElementById('count-revit_addin').innerText = allTools.filter(t => t.category === 'revit_addin').length;
+            document.getElementById('count-revit_dynamo').innerText = allTools.filter(t => t.category === 'revit_dynamo').length;
 
             if (filtered.length === 0) {
                 container.innerHTML = `<div class="col-span-full py-12 text-center text-slate-500 font-display text-sm border border-dashed border-border-light dark:border-border-dark">Không tìm thấy công cụ phù hợp.</div>`;
@@ -439,6 +482,15 @@
                     const response = await fetch(url);
                     if (!response.ok) throw new Error('Network error');
                     const text = await response.text();
+                    
+                    // If content is just a single external link, open it!
+                    const trimmed = text.trim();
+                    if ((trimmed.startsWith('http://') || trimmed.startsWith('https://')) && !trimmed.includes('\n')) {
+                        window.open(trimmed, '_blank');
+                        btn.innerHTML = ogHtml;
+                        btn.disabled = false;
+                        return;
+                    }
 
                     // Native Windows File Save Dialog via showSaveFilePicker API
                     if (window.showSaveFilePicker) {
