@@ -81,7 +81,7 @@
                         style="display: none;">CAD</div>
                     <div class="flex flex-col leading-none">
                         <span class="font-display font-bold tracking-tighter text-xl uppercase">Lisp Cad</span>
-                        <span class="text-[9px] font-display tracking-[0.2em] text-primary font-bold">Make life more beautiful</span>
+                        <span class="text-[9px] font-mono tracking-[0.3em] text-primary font-bold">Mọi Tiện Ích Tốt Nhất</span>
                     </div>
                 </div>
             </div>
@@ -269,9 +269,9 @@
 
     <!-- VIEW SOURCE MODAL -->
     <div id="viewSourceModal"
-        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity duration-300">
         <div
-            class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark w-full max-w-4xl h-[90vh] flex flex-col shadow-2xl">
+            id="viewSourceModalContainer" class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark w-full max-w-4xl h-[90vh] flex flex-col shadow-2xl transform scale-95 transition-all duration-300">
             <div
                 class="px-6 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-slate-50 dark:bg-black/50">
                 <h3 id="viewSourceTitle"
@@ -492,12 +492,20 @@
             const contentEl = document.getElementById('viewSourceContent');
             const loadingEl = document.getElementById('viewSourceLoading');
             const modal = document.getElementById('viewSourceModal');
+            const container = document.getElementById('viewSourceModalContainer');
+
+            // Set small size for guide
+            container.classList.remove('max-w-4xl', 'h-[90vh]');
+            container.classList.add('max-w-md', 'h-auto', 'max-h-[90vh]');
 
             loadingEl.classList.add('hidden');
             contentEl.innerText = guideText ? decodeURIComponent(guideText) : 'No guide provided.';
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+            void modal.offsetWidth; // force reflow
+            container.classList.remove('scale-95');
+            container.classList.add('scale-100');
             document.body.style.overflow = 'hidden';
         }
 
@@ -507,11 +515,20 @@
             const contentEl = document.getElementById('viewSourceContent');
             const loadingEl = document.getElementById('viewSourceLoading');
             const modal = document.getElementById('viewSourceModal');
+            const container = document.getElementById('viewSourceModalContainer');
+
+            // Set large size for source code
+            container.classList.remove('max-w-md', 'h-auto', 'max-h-[90vh]');
+            container.classList.add('max-w-4xl', 'h-[90vh]');
 
             contentEl.innerText = "";
             loadingEl.classList.remove('hidden');
+            
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+            void modal.offsetWidth; // force reflow
+            container.classList.remove('scale-95');
+            container.classList.add('scale-100');
             document.body.style.overflow = 'hidden';
 
             try {
@@ -528,9 +545,16 @@
 
         function closeSourceModal() {
             const modal = document.getElementById('viewSourceModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.body.style.overflow = '';
+            const container = document.getElementById('viewSourceModalContainer');
+            
+            container.classList.remove('scale-100');
+            container.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }, 300);
         }
 
         async function copySourceCode() {
