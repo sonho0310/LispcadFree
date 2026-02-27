@@ -1,0 +1,13 @@
+{
+  "name": "lispcad-api",
+  "version": "1.0.0",
+  "description": "API backend for Lispcad via Vercel and GitHub",
+  "main": "api/upload.js",
+  "scripts": {
+    "start": "node api/upload.js"
+  },
+  "dependencies": {
+    "@octokit/rest": "^20.0.2",
+    "cors": "^2.8.5"
+  }
+}
