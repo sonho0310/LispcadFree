@@ -64,6 +64,8 @@
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #e11d48; }
   </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 
 <body
@@ -81,7 +83,7 @@
                         style="display: none;">CAD</div>
                     <div class="flex flex-col leading-none">
                         <span class="font-display font-bold tracking-tighter text-xl uppercase">Túi thần kì Doremon</span>
-                        <span class="text-[11px] font-mono tracking-[0.2em] text-primary font-bold">Make life more beautiful</span>
+                        <span class="text-[9px] font-mono tracking-[0.2em] text-primary font-bold">Make life more beautiful</span>
                     </div>
                 </div>
             </div>
@@ -103,7 +105,7 @@
         <aside class="w-full md:w-72 flex-shrink-0 relative">
             <div class="sticky top-24 pb-8">
                 <h2
-                    class="font-display text-[15px] font-bold uppercase tracking-[0.25em] text-slate-400 mb-6 flex items-center gap-2">
+                    class="font-display text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 mb-6 flex items-center gap-2">
                     <span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span>Autocad</h2>
                 <nav class="space-y-2" id="category-nav">
                     <a href="#" onclick="filterByCategory('all', this)"
@@ -136,7 +138,7 @@
                     </a>
                 </nav>
                 <h2
-                    class="font-display text-[15px] font-bold uppercase tracking-[0.25em] text-slate-400 mt-10 mb-6 flex items-center gap-2">
+                    class="font-display text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 mt-10 mb-6 flex items-center gap-2">
                     <span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span>Revit
                 </h2>
                 <nav class="space-y-2" id="category-revit-nav">
@@ -285,6 +287,11 @@
                         <label for="fileUpload"
                             class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-white px-3 py-1 transition-colors flex items-center gap-2">
                             <span class="material-symbols-outlined text-[14px]">upload_file</span>KÉO/CHỌN FILE .LSP</label>
+                        <label for="folderUpload" class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-white px-3 py-1 transition-colors flex items-center gap-2 mt-2 sm:mt-0">
+                            <span class="material-symbols-outlined text-[14px]">folder_zip</span> CHỌN FOLDER
+                        </label>
+                        <input type="file" id="folderUpload" webkitdirectory directory multiple class="hidden" onchange="handleFolderUpload(event)">
+
                         <input type="file" id="fileUpload" accept=".lsp,.txt" class="hidden"
                             onchange="handleFileUpload(event)">
                     </div>
@@ -643,8 +650,10 @@
                 category: document.getElementById('toolCategory').value,
                 desc: document.getElementById('toolDesc').value,
                 guide: document.getElementById('toolGuide').value,
-                toolCode: document.getElementById('toolCode').value
+                toolCode: document.getElementById('toolCode').value,
+                isZip: window.isZipUpload === true
             };
+            window.isZipUpload = false;
 
             if (VERCEL_API_URL !== "") {
                 try {
@@ -681,17 +690,105 @@
             btn.disabled = false;
         });
 
-        // Xử lý kéo thả file
+        // Xử lý kéo thả file & thư mục
+        window.isZipUpload = false;
+
         function handleFileUpload(event) {
             const file = event.target.files[0];
-            if (file) readFileContent(file);
+            if (file) {
+                window.isZipUpload = false;
+                readFileContent(file);
+            }
         }
 
-        function handleFileDrop(event) {
+        async function handleFolderUpload(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+            
+            const zip = new JSZip();
+            let totalSize = 0;
+            const MAX_SIZE = 50 * 1024 * 1024; // 50MB
+            
+            document.getElementById('toolCode').value = "Đang nén thư mục, vui lòng đợi...";
+            
+            try {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    totalSize += file.size;
+                    if (totalSize > MAX_SIZE) throw new Error("Vượt quá 50MB");
+                    zip.file(file.webkitRelativePath || file.name, file);
+                }
+                const content = await zip.generateAsync({ type: "base64", compression: "DEFLATE", compressionOptions: { level: 6 }});
+                window.isZipUpload = true;
+                document.getElementById('toolCode').value = content;
+                showToast("Đã nén thư mục (" + (totalSize/(1024*1024)).toFixed(2) + "MB)", "success");
+            } catch (err) {
+                document.getElementById('toolCode').value = "";
+                showToast(err.message === "Vượt quá 50MB" ? "Thư mục quá lớn (>50MB)" : "Lỗi nén thư mục", "error");
+            }
+        }
+
+        async function handleFileDrop(event) {
             event.preventDefault();
             event.currentTarget.classList.remove('border-primary');
+            
+            const items = event.dataTransfer.items;
+            if (items && items.length > 0) {
+                const entry = items[0].webkitGetAsEntry ? items[0].webkitGetAsEntry() : null;
+                if (entry && entry.isDirectory) {
+                    await processFolderDrop(items);
+                    return;
+                }
+            }
+            
             const file = event.dataTransfer.files[0];
-            if (file) readFileContent(file);
+            if (file) {
+                 window.isZipUpload = false;
+                 readFileContent(file);
+            }
+        }
+
+        async function processFolderDrop(items) {
+            const zip = new JSZip();
+            let totalSize = 0;
+            const MAX_SIZE = 50 * 1024 * 1024;
+            document.getElementById('toolCode').value = "Đang nén thư mục, vui lòng đợi...";
+            
+            async function traverse(item, path) {
+                if (item.isFile) {
+                    const file = await new Promise(resolve => item.file(resolve));
+                    totalSize += file.size;
+                    if (totalSize > MAX_SIZE) throw new Error("Vượt quá 50MB");
+                    zip.file(path + file.name, file);
+                } else if (item.isDirectory) {
+                    const dirReader = item.createReader();
+                    const entries = await new Promise(resolve => {
+                        let result = [];
+                        const readEntries = () => {
+                            dirReader.readEntries(batch => {
+                                if (!batch.length) resolve(result);
+                                else { result = result.concat(batch); readEntries(); }
+                            });
+                        };
+                        readEntries();
+                    });
+                    for (let entry of entries) await traverse(entry, path + item.name + "/");
+                }
+            }
+
+            try {
+                for (let i = 0; i < items.length; i++) {
+                    const item = items[i].webkitGetAsEntry ? items[i].webkitGetAsEntry() : null;
+                    if (item) await traverse(item, "");
+                }
+                const content = await zip.generateAsync({ type: "base64", compression: "DEFLATE", compressionOptions: { level: 6 }});
+                window.isZipUpload = true;
+                document.getElementById('toolCode').value = content;
+                showToast("Đã nén thư mục (" + (totalSize/(1024*1024)).toFixed(2) + "MB)", "success");
+            } catch (err) {
+                document.getElementById('toolCode').value = "";
+                showToast(err.message === "Vượt quá 50MB" ? "Thư mục quá lớn (>50MB)" : "Lỗi nén", "error");
+            }
         }
 
         function readFileContent(file) {
