@@ -94,6 +94,9 @@
                 <button class="p-2 text-slate-400 hover:text-primary transition-colors" onclick="toggleDarkMode()">
                     <span class="material-symbols-outlined text-xl">contrast</span>
                 </button>
+                <button onclick="showCategoryForm()" id="btn-submit-category"
+                    class="bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-6 py-2 text-[11px] font-display font-bold uppercase tracking-widest hover:bg-slate-300 dark:hover:bg-slate-700 transition-all shadow-sm">THÊM
+                    THƯ MỤC</button>
                 <button onclick="showSubmissionForm()" id="btn-submit-tool"
                     class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2 text-[11px] font-display font-bold uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 dark:hover:text-slate-900 transition-all shadow-sm">THÊM
                     TOOL</button>
@@ -176,17 +179,23 @@
                             class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
                             placeholder="VD: TL - Tổng chiều dài" type="text" />
                     </div>
-                    
+
                     <div class="space-y-2">
-                        <label class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Danh Mục</label>
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Danh
+                            Mục</label>
                         <select id="toolCategory"
                             class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary">
                             <!-- Populated dynamically -->
                         </select>
                     </div>
                     <div class="space-y-2">
-                        <label class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Tác giả</label>
-                        <input id="toolAuthor" class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary" placeholder="Nhập tên tác giả..." type="text" />
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Tác
+                            giả</label>
+                        <input id="toolAuthor"
+                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
+                            placeholder="Nhập tên tác giả..." type="text" />
                     </div>
                     <div class="md:col-span-2 space-y-2">
                         <label
@@ -257,6 +266,39 @@
         </form>
     </main>
 
+    <!-- VIEW SOURCE MODAL -->
+    <div id="viewSourceModal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity duration-300">
+        <div id="viewSourceModalContainer"
+            class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark w-full max-w-4xl h-[90vh] flex flex-col shadow-2xl transform scale-95 transition-all duration-300">
+            <div
+                class="px-6 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-slate-50 dark:bg-black/50">
+                <h3 id="viewSourceTitle"
+                    class="font-display font-bold text-lg uppercase tracking-wider text-slate-800 dark:text-slate-200">
+                    Mã Nguồn Của Tool</h3>
+                <div class="flex items-center gap-3">
+                    <button onclick="copySourceCode()" id="copySourceBtn"
+                        class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-display text-[10px] tracking-widest uppercase transition-colors flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[14px]">content_copy</span>SAO CHÉP</button>
+                    <button onclick="closeSourceModal()"
+                        class="text-slate-500 hover:text-primary transition-colors flex">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 bg-[#0d1117] relative">
+                <div id="viewSourceLoading"
+                    class="absolute inset-0 flex flex-col items-center justify-center bg-[#0d1117] z-10 hidden">
+                    <span class="material-symbols-outlined text-4xl animate-spin text-primary">sync</span>
+                    <p class="mt-4 font-display text-xs tracking-widest uppercase text-slate-400">ĐANG TẢI MÃ NGUỒN...
+                    </p>
+                </div>
+                <pre><code id="viewSourceContent" class="font-display text-xs text-slate-300 leading-relaxed tabular-nums whitespace-pre-wrap"></code></pre>
+            </div>
+        </div>
+    </div>
+
+    
     <!-- VIEW SOURCE MODAL -->
     <div id="viewSourceModal"
         class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity duration-300">
