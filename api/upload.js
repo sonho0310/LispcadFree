@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { id, category, title, desc, toolCode, guide } = req.body;
+    const { id, category, title, desc, toolCode, guide, author, fileExtension } = req.body;
 
     // Check mandatory fields
     if (!title || !desc || !toolCode) {
@@ -41,16 +41,16 @@ module.exports = async (req, res) => {
     // Tên file: bỏ dấu, khoảng trắng thành _, thay bằng timestamp cho chắc ăn không trùng.
     const safeName = title.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
     const isZip = req.body.isZip || false;
-    const lspFileName = `${safeName}_${Date.now()}${isZip ? '.zip' : '.lsp'}`;
+    const lspFileName = `${safeName}_${Date.now()}${isZip ? '.zip' : (fileExtension || '.lsp')}`;
     const lspFilePath = `scripts/${lspFileName}`;
 
     // Convert LISP code to Base64
     let lspFileContentBase64;
     if (isZip) {
-        // Nếu là zip, toolCode từ client gửi lên đã là base64 sẵn
-        lspFileContentBase64 = toolCode;
+      // Nếu là zip, toolCode từ client gửi lên đã là base64 sẵn
+      lspFileContentBase64 = toolCode;
     } else {
-        lspFileContentBase64 = Buffer.from(toolCode).toString('base64');
+      lspFileContentBase64 = Buffer.from(toolCode).toString('base64');
     }
 
     await octokit.repos.createOrUpdateFileContents({
@@ -86,6 +86,7 @@ module.exports = async (req, res) => {
     const newTool = {
       id: id || Date.now().toString(),
       category: category || 'cad',
+      author: author || 'Sưu tầm',
       title: title.trim(),
       desc: desc.trim(),
       filename: directDownloadUrl, // Dùng GitHub URL thay vì Link tải
