@@ -28,7 +28,6 @@ module.exports = async (req, res) => {
         const owner = process.env.GITHUB_OWNER || "sonho0310";
         const repo = process.env.GITHUB_REPO || "lispcad-data";
         const dbCatPath = 'categories.json';
-        const dbToolsPath = 'database.json';
 
         if (!process.env.GITHUB_TOKEN) {
             return res.status(500).json({ error: 'Chưa cấu hình GITHUB_TOKEN trên Vercel' });
@@ -48,6 +47,15 @@ module.exports = async (req, res) => {
         if (action === 'delete') {
             if (!id_to_delete || !id_target) return res.status(400).json({ error: 'Thiếu thông tin xóa' });
 
+            const catToDelete = currentCats.find(c => c.id === id_to_delete);
+            const catTarget = currentCats.find(c => c.id === id_target);
+
+            const safeMainSource = (catToDelete ? catToDelete.main : 'autocad').normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+            const safeMainTarget = (catTarget ? catTarget.main : 'autocad').normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+
+            const dbSourcePath = `database_${safeMainSource}.json`;
+            const dbTargetPath = `database_${safeMainTarget}.json`;
+
             // Remove from categories
             const filterCats = currentCats.filter(c => c.id !== id_to_delete);
             const updatedCatBase64 = Buffer.from(JSON.stringify(filterCats, null, 2)).toString('base64');
@@ -61,34 +69,73 @@ module.exports = async (req, res) => {
             });
 
             // Re-assign tools
-            let currentTools = [];
-            let toolsFile;
             try {
-                const { data } = await octokit.repos.getContent({ owner, repo, path: dbToolsPath });
-                toolsFile = data;
-                const toolsStr = Buffer.from(toolsFile.content, 'base64').toString('utf-8');
-                currentTools = JSON.parse(toolsStr);
+                let toolsFileSource;
+                let currentToolsSource = [];
+                try {
+                    const { data } = await octokit.repos.getContent({ owner, repo, path: dbSourcePath });
+                    toolsFileSource = data;
+                    currentToolsSource = JSON.parse(Buffer.from(toolsFileSource.content, 'base64').toString('utf-8'));
+                } catch (e) { }
 
-                let updated = false;
-                currentTools.forEach(t => {
-                    if (t.category === id_to_delete) {
-                        t.category = id_target;
-                        updated = true;
-                    }
-                });
-
-                if (updated) {
-                    const updatedToolsBase64 = Buffer.from(JSON.stringify(currentTools, null, 2)).toString('base64');
-                    await octokit.repos.createOrUpdateFileContents({
-                        owner, repo,
-                        path: dbToolsPath,
-                        message: `Cập nhật category tool sang ${id_target}`,
-                        content: updatedToolsBase64,
-                        sha: toolsFile ? toolsFile.sha : undefined,
+                if (dbSourcePath === dbTargetPath) {
+                    let updated = false;
+                    currentToolsSource.forEach(t => {
+                        if (t.category === id_to_delete) {
+                            t.category = id_target;
+                            updated = true;
+                        }
                     });
+                    if (updated) {
+                        await octokit.repos.createOrUpdateFileContents({
+                            owner, repo, path: dbSourcePath,
+                            message: `Cập nhật category tool sang ${id_target}`,
+                            content: Buffer.from(JSON.stringify(currentToolsSource, null, 2)).toString('base64'),
+                            sha: toolsFileSource ? toolsFileSource.sha : undefined,
+                        });
+                    }
+                } else {
+                    let toolsToMove = [];
+                    let remainingToolsSource = [];
+                    currentToolsSource.forEach(t => {
+                        if (t.category === id_to_delete) {
+                            t.category = id_target;
+                            toolsToMove.push(t);
+                        } else {
+                            remainingToolsSource.push(t);
+                        }
+                    });
+
+                    if (toolsToMove.length > 0) {
+                        // Update Source
+                        await octokit.repos.createOrUpdateFileContents({
+                            owner, repo, path: dbSourcePath,
+                            message: `Remove tools moved to ${id_target}`,
+                            content: Buffer.from(JSON.stringify(remainingToolsSource, null, 2)).toString('base64'),
+                            sha: toolsFileSource ? toolsFileSource.sha : undefined,
+                        });
+
+                        // Update Target
+                        let toolsFileTarget;
+                        let currentToolsTarget = [];
+                        try {
+                            const { data } = await octokit.repos.getContent({ owner, repo, path: dbTargetPath });
+                            toolsFileTarget = data;
+                            currentToolsTarget = JSON.parse(Buffer.from(toolsFileTarget.content, 'base64').toString('utf-8'));
+                        } catch (e) { }
+
+                        currentToolsTarget.push(...toolsToMove);
+
+                        await octokit.repos.createOrUpdateFileContents({
+                            owner, repo, path: dbTargetPath,
+                            message: `Receive tools from ${id_to_delete}`,
+                            content: Buffer.from(JSON.stringify(currentToolsTarget, null, 2)).toString('base64'),
+                            sha: toolsFileTarget ? toolsFileTarget.sha : undefined,
+                        });
+                    }
                 }
             } catch (err) {
-                console.log("Không lấy được tools.json để update", err);
+                console.log("Không lấy được modules.json để update", err);
             }
 
             return res.status(200).json({ success: true, updatedCategories: filterCats });
