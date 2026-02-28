@@ -1123,8 +1123,9 @@
             if (!list) return;
             let html = '';
             allCategories.forEach((c, index) => {
+                const isLocked = c.id === 'all' || c.id === 'revit_all';
                 html += `
-                <div class="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 mb-2 rounded shadow-sm">
+                <div class="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 mb-2 rounded shadow-sm opacity-${isLocked ? '70' : '100'}">
                     <div class="flex items-center gap-3">
                         <span class="material-symbols-outlined text-slate-400 text-lg">${c.icon}</span>
                         <div>
@@ -1133,13 +1134,13 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-1">
-                        <button onclick="moveCategoryUp(${index})" class="p-1 text-slate-400 hover:text-primary transition-colors disabled:opacity-30 disabled:hover:text-slate-400" ${index === 0 ? 'disabled' : ''}>
+                        <button onclick="moveCategoryUp(${index})" class="p-1 text-slate-400 hover:text-primary transition-colors disabled:opacity-30 disabled:hover:text-slate-400" ${isLocked || index === 0 ? 'disabled' : ''}>
                             <span class="material-symbols-outlined text-lg">arrow_upward</span>
                         </button>
-                        <button onclick="moveCategoryDown(${index})" class="p-1 text-slate-400 hover:text-primary transition-colors disabled:opacity-30 disabled:hover:text-slate-400" ${index === allCategories.length - 1 ? 'disabled' : ''}>
+                        <button onclick="moveCategoryDown(${index})" class="p-1 text-slate-400 hover:text-primary transition-colors disabled:opacity-30 disabled:hover:text-slate-400" ${isLocked || index === allCategories.length - 1 ? 'disabled' : ''}>
                             <span class="material-symbols-outlined text-lg">arrow_downward</span>
                         </button>
-                        <button onclick="confirmDeleteCategory('${c.id}')" class="p-1 text-slate-400 hover:text-rose-500 transition-colors ml-2">
+                        <button onclick="confirmDeleteCategory('${c.id}')" class="p-1 text-slate-400 hover:text-rose-500 transition-colors ml-2 disabled:opacity-30 disabled:hover:text-slate-400" ${isLocked ? 'disabled' : ''}>
                             <span class="material-symbols-outlined text-lg border-l border-slate-300 dark:border-slate-700 pl-3">delete</span>
                         </button>
                     </div>
