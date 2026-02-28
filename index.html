@@ -860,7 +860,8 @@
                 desc: document.getElementById('toolDesc').value,
                 guide: document.getElementById('toolGuide').value,
                 toolCode: document.getElementById('toolCode').value,
-                isZip: window.isZipUpload === true
+                isZip: window.isZipUpload === true,
+                fileExtension: window.fileExtension || '.lsp'
             };
             window.isZipUpload = false;
 
@@ -901,11 +902,14 @@
 
         // Xử lý kéo thả file & thư mục
         window.isZipUpload = false;
+        window.fileExtension = ".lsp";
 
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (file) {
                 window.isZipUpload = false;
+                const nameParts = file.name.split('.');
+                window.fileExtension = nameParts.length > 1 ? '.' + nameParts.pop() : '.lsp';
                 readFileContent(file);
             }
         }
@@ -953,6 +957,8 @@
             const file = event.dataTransfer.files[0];
             if (file) {
                 window.isZipUpload = false;
+                const nameParts = file.name.split('.');
+                window.fileExtension = nameParts.length > 1 ? '.' + nameParts.pop() : '.lsp';
                 readFileContent(file);
             }
         }
