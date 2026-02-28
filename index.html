@@ -1047,54 +1047,6 @@
         // Chạy app
         window.onload = initApp;
 
-        // Logic Add Category API Call
-        document.getElementById('addCategoryForm')?.addEventListener('submit', async function (e) {
-            e.preventDefault();
-            const btn = document.getElementById('btnSubmitCategory');
-            const ogHtml = btn.innerHTML;
-            btn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">sync</span> ĐANG TẠO...`;
-            btn.disabled = true;
-
-            const password = document.getElementById('catAdminPwdAdd').value;
-            let main = document.getElementById('catMainFolder').value;
-            if (main === 'NEW_MAIN') main = document.getElementById('catNewMainName').value;
-
-            const name = document.getElementById('catSubName').value;
-            const id = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9\s]/g, "").trim().replace(/\s+/g, '_').toLowerCase() + "_" + Date.now().toString().slice(-4);
-
-            try {
-                const res = await fetch(VERCEL_API_CATEGORY_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password, main, id, name })
-                });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || 'Thêm thư mục thất bại (kiểm tra pass)');
-
-                // Update category lists
-                const existsIndex = allCategories.findIndex(c => c.id === data.category.id);
-                if (existsIndex > -1) {
-                    allCategories[existsIndex] = data.category;
-                } else {
-                    allCategories.push(data.category);
-                }
-
-                renderCategoriesSidebar();
-                renderCategorySelectInputs();
-                renderTools(document.getElementById('searchInput').value); // update counts
-
-                showToast("Đã tạo thư mục thành công!", "success");
-                closeCategoryModal();
-                document.getElementById('addCategoryForm').reset();
-                toggleNewMainFolder();
-            } catch (err) {
-                showToast("Lỗi: " + err.message, "error");
-            } finally {
-                btn.innerHTML = ogHtml;
-                btn.disabled = false;
-            }
-        });
-
         // Logic Switch Tab Category
         function switchCategoryTab(tab) {
             const btnAdd = document.getElementById('tabBtn-add');
@@ -1288,6 +1240,63 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             initApp();
+
+            // Search Listener
+            document.getElementById('searchInput')?.addEventListener('input', (e) => {
+                renderTools(e.target.value);
+            });
+
+            // Add Category Form Listener
+            document.getElementById('addCategoryForm')?.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const btn = document.getElementById('btnSubmitCategory');
+                const ogHtml = btn.innerHTML;
+                btn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">sync</span> ĐANG TẠO...`;
+                btn.disabled = true;
+
+                const password = document.getElementById('catAdminPwdAdd').value;
+                let main = document.getElementById('catMainFolder').value;
+                if (main === 'NEW_MAIN') main = document.getElementById('catNewMainName').value;
+
+                const name = document.getElementById('catSubName').value;
+                const id = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9\s]/g, "").trim().replace(/\s+/g, '_').toLowerCase() + "_" + Date.now().toString().slice(-4);
+
+                try {
+                    const res = await fetch(VERCEL_API_CATEGORY_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ password, main, id, name })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || 'Thêm thư mục thất bại (kiểm tra pass)');
+
+                    // Update category lists
+                    const loadedCats = data.category ? [data.category] : [];
+                    if (data.category) {
+                        const existsIndex = allCategories.findIndex(c => c.id === data.category.id);
+                        if (existsIndex > -1) {
+                            allCategories[existsIndex] = data.category;
+                        } else {
+                            allCategories.push(data.category);
+                        }
+                    }
+
+                    renderCategoriesSidebar();
+                    renderCategorySelectInputs();
+                    renderCategoryManageList();
+                    renderTools(document.getElementById('searchInput').value);
+
+                    showToast("Đã tạo thư mục thành công!", "success");
+                    closeCategoryModal();
+                    document.getElementById('addCategoryForm').reset();
+                    toggleNewMainFolder();
+                } catch (err) {
+                    showToast("Lỗi: " + err.message, "error");
+                } finally {
+                    btn.innerHTML = ogHtml;
+                    btn.disabled = false;
+                }
+            });
 
             document.getElementById('btnConfirmDeleteFinal')?.addEventListener('click', () => {
                 const targetId = document.getElementById('migrationTargetSelect').value;
