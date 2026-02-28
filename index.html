@@ -470,6 +470,10 @@
                     dateStr = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
                 }
 
+                let catDisplay = (tool.category || 'CAD').toUpperCase().replace('REVIT_', 'REVIT ');
+                if (tool.category === 'cad') catDisplay = 'BLOCK';
+                else if (tool.category === 'lisp') catDisplay = 'LAYER - POLYLINE';
+
                 container.innerHTML += `
           <div class="group relative bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark p-6 transition-all hover:border-primary/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div class="flex items-start gap-5 flex-1">
@@ -480,7 +484,7 @@
                 <h3 class="font-display font-bold text-lg tracking-tight group-hover:text-primary transition-colors uppercase">${tool.title.replace(/'/g, "\\'")}</h3>
                 <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">${tool.desc}</p>
                 <div class="flex flex-wrap gap-2 mt-3">
-                  <span class="text-[9px] px-2 py-0.5 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">category</span> ${(tool.category || 'CAD').toUpperCase().replace('REVIT_', 'REVIT ')}</span>
+                  <span class="text-[9px] px-2 py-0.5 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">category</span> ${catDisplay}</span>
                   <span class="text-[9px] px-2 py-0.5 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">history</span> ${dateStr}</span>
                   <span class="text-[9px] px-2 py-0.5 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">person</span> ${tool.author || 'Sưu Tầm'}</span>
                 </div>
