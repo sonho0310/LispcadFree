@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Nền Tảng Công Cụ Miễn Phí</title>
+    <link rel="icon" type="image/png" href="logo.png?v=3" />
+    <link rel="shortcut icon" href="logo.png?v=3" type="image/png" />
+    <link rel="apple-touch-icon" href="logo.png?v=3" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e11d48',
+                        'background-light': '#fdfdfd',
+                        'background-dark': '#0a0a0c',
+                        'card-light': '#ffffff',
+                        'card-dark': '#121214',
+                        'border-light': '#e5e7eb',
+                        'border-dark': '#27272a',
+                    },
+                    fontFamily: {
+                        display: ['JetBrains Mono', 'monospace'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    borderRadius: { DEFAULT: '0px' },
+                },
+            },
+        };
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+        function showSubmissionForm() {
+            document.getElementById('main-list').classList.add('hidden');
+            document.getElementById('submission-form').classList.remove('hidden');
+        }
+        function hideSubmissionForm() {
+            document.getElementById('submission-form').classList.add('hidden');
+            document.getElementById('main-list').classList.remove('hidden');
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+      .blueprint-bg {
+        background-image: radial-gradient(circle, #e2e8f0 1px, transparent 1px);
+        background-size: 32px 32px;
+      }
+      .dark .blueprint-bg {
+        background-image: radial-gradient(circle, #1e1e24 1px, transparent 1px);
+      }
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #e11d48; }
+  </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-sans blueprint-bg min-h-screen transition-colors duration-300 pb-24">
+
+    <!-- HEADER -->
+    <header
+        class="sticky top-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-b border-border-light dark:border-border-dark">
+        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-10">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="hideSubmissionForm()">
+                    <img src="logo.png?v=3" alt="Logo" class="w-8 h-8 object-contain"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <div class="w-8 h-8 flex items-center justify-center bg-primary text-white font-bold hidden"
+                        style="display: none;">CAD</div>
+                    <div class="flex flex-col leading-none">
+                        <span class="font-display font-bold tracking-tighter text-xl uppercase">Túi thần kì
+                            Doremon</span>
+                        <span class="text-[9px] font-mono tracking-[0.2em] text-primary font-bold">Make life more
+                            beautiful</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+
+                <button class="p-2 text-slate-400 hover:text-primary transition-colors" onclick="toggleDarkMode()">
+                    <span class="material-symbols-outlined text-xl">contrast</span>
+                </button>
+                <button onclick="showSubmissionForm()" id="btn-submit-tool"
+                    class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2 text-[11px] font-display font-bold uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 dark:hover:text-slate-900 transition-all shadow-sm">THÊM
+                    TOOL</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN LIST PAGE -->
+    <main id="main-list" class="max-w-[1400px] mx-auto px-6 py-10 flex flex-col md:flex-row gap-10">
+
+        <!-- Sidebar -->
+        <aside class="w-full md:w-72 flex-shrink-0 relative">
+            <div class="sticky top-24 pb-8">
+                <h2
+                    class="font-display text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 mb-6 flex items-center gap-2">
+                    <span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span>Autocad
+                </h2>
+                <nav class="space-y-2" id="category-nav">
+                    <a href="#" onclick="filterByCategory('all', this)"
+                        class="category-link flex items-center justify-between px-4 py-3 bg-slate-200 dark:bg-slate-800 border-r-4 border-slate-400 group transition-all mb-4">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-2xl">apps</span>
+                            <span class="font-display text-xs font-bold tracking-widest uppercase">Tất Cả Công Cụ</span>
+                        </div>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-all">0</span>
+                    </a>
+                    <a href="#" onclick="filterByCategory('cad', this)"
+                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
+                        <div class="flex items-center gap-4">
+                            <span
+                                class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">view_in_ar</span>
+                            <span
+                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">BLOCK</span>
+                        </div>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-cad">0</span>
+                    </a>
+                    <a href="#" onclick="filterByCategory('lisp', this)"
+                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
+                        <div class="flex items-center gap-4">
+                            <span
+                                class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">code</span>
+                            <span
+                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Layer
+                                - Polyline </span>
+                        </div>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-lisp">0</span>
+                    </a>
+                </nav>
+                <h2
+                    class="font-display text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 mt-10 mb-6 flex items-center gap-2">
+                    <span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span>Revit
+                </h2>
+                <nav class="space-y-2" id="category-revit-nav">
+                    <a href="#" onclick="filterByCategory('revit_all', this)"
+                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
+                        <div class="flex items-center gap-4">
+                            <span
+                                class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">domain</span>
+                            <span
+                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Tất
+                                Cả Revit</span>
+                        </div>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white"
+                            id="count-revit_all">0</span>
+                    </a>
+                    <a href="#" onclick="filterByCategory('revit_addin', this)"
+                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
+                        <div class="flex items-center gap-4">
+                            <span
+                                class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">extension</span>
+                            <span
+                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Revit
+                                Addin</span>
+                        </div>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white"
+                            id="count-revit_addin">0</span>
+                    </a>
+                    <a href="#" onclick="filterByCategory('revit_dynamo', this)"
+                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
+                        <div class="flex items-center gap-4">
+                            <span
+                                class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">account_tree</span>
+                            <span
+                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Revit
+                                Dynamo</span>
+                        </div>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white"
+                            id="count-revit_dynamo">0</span>
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Content List -->
+        <section class="flex-1">
+            <div class="mb-10">
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                        <span
+                            class="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+                    </div>
+                    <input id="searchInput" oninput="searchTools()"
+                        class="block w-full pl-14 pr-12 py-5 bg-white dark:bg-black border-2 border-border-light dark:border-border-dark focus:ring-0 focus:border-primary font-display text-sm tracking-tight placeholder-slate-400 outline-none"
+                        placeholder="Tìm kiếm theo tên hoặc chức năng..." type="text" />
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading-state" class="py-20 flex flex-col items-center justify-center opacity-50">
+                <span class="material-symbols-outlined text-4xl animate-spin">sync</span>
+                <p class="mt-4 font-display text-xs tracking-widest uppercase">ĐANG ĐỒNG BỘ DỮ LIỆU...</p>
+            </div>
+
+            <!-- Tool Container -->
+            <div id="tools-container" class="grid grid-cols-1 gap-4 hidden">
+                <!-- Tools will be injected here -->
+            </div>
+
+        </section>
+    </main>
+
+    <!-- SUBMISSION PAGE (Hidden by default) -->
+    <main id="submission-form" class="max-w-[1000px] mx-auto px-6 py-12 hidden relative">
+        <div class="sticky top-24 z-[90] inline-block mb-10 select-none">
+            <div onclick="hideSubmissionForm()"
+                class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-900 border border-border-light dark:border-border-dark hover:border-primary transition-colors cursor-pointer group shadow-sm">
+                <span
+                    class="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                <span
+                    class="text-[10px] font-display font-bold uppercase tracking-[0.2em] text-slate-900 dark:text-slate-100">Quay
+                    Về Thư Viện</span>
+            </div>
+        </div>
+        <header class="mb-12">
+            <h1 class="text-4xl font-display font-bold tracking-tight mb-2 uppercase">Đăng Công Cụ Mới</h1>
+            <p class="text-slate-500 dark:text-slate-400 font-display text-sm">Chia sẻ mã lisp của bạn lên thư viện công
+                cộng.</p>
+        </header>
+
+        <form id="addToolForm" class="space-y-8">
+
+            <!-- Section 1: Info -->
+            <section
+                class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark p-8 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+                <div class="flex items-center gap-3 mb-8">
+                    <span class="font-display text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1">01</span>
+                    <h2 class="font-display font-bold uppercase tracking-widest text-sm">Thông tin chung</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Tên
+                            Công Cụ *</label>
+                        <input required id="toolTitle"
+                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
+                            placeholder="VD: TL - Tổng chiều dài" type="text" />
+                    </div>
+                    <div class="space-y-2">
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Danh
+                            Mục</label>
+                        <select id="toolCategory"
+                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary">
+                            <optgroup label="AutoCAD">
+                                <option value="BLOCK">BLOCK</option>
+                                <option value="Layer - Polyline">Layer - Polyline</option>
+                            </optgroup>
+                            <optgroup label="Revit">
+                                <option value="revit_addin">Revit Addin</option>
+                                <option value="revit_dynamo">Revit Dynamo</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2 space-y-2">
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Mô
+                            tả kỹ thuật *</label>
+                        <textarea required id="toolDesc"
+                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary resize-none"
+                            placeholder="Mô tả chi tiết những gì lisp này thực hiện..." rows="2"></textarea>
+                    </div>
+                    <div class="md:col-span-2 space-y-2">
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Hướng
+                            dẫn sử dụng</label>
+                        <textarea id="toolGuide"
+                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary resize-none"
+                            placeholder="Lệnh chạy, phím tắt, ghi chú cách dùng..." rows="2"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Code -->
+            <section
+                class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark p-8 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-slate-400"></div>
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center gap-3">
+                        <span class="font-display text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1">02</span>
+                        <h2 class="font-display font-bold uppercase tracking-widest text-sm">Triển Khai Mã Nguồn / Cài
+                            Đặt *</h2>
+                    </div>
+                </div>
+                <div class="relative group">
+                    <textarea required id="toolCode"
+                        ondragover="event.preventDefault(); this.classList.add('border-primary');"
+                        ondragleave="this.classList.remove('border-primary');" ondrop="handleFileDrop(event);"
+                        class="w-full bg-[#0d1117] text-slate-300 font-display text-xs p-6 pt-10 focus:outline-none border border-border-dark focus:border-primary leading-relaxed custom-scrollbar transition-colors"
+                        placeholder=";; Dán mã nguồn Lisp vào đây...&#10;Hoặc dán Link Google Drive tải Revit Addin vào đây..."
+                        rows="12"></textarea>
+                    <div class="absolute top-3 right-4 flex items-center gap-4 text-[10px] font-display text-slate-500">
+                        <span>DÁN MÃ NGUỒN HOẶC LINK TẢI</span>
+                        <span>HOẶC</span>
+                        <label for="fileUpload"
+                            class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-white px-3 py-1 transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[14px]">upload_file</span>KÉO/CHỌN FILE
+                            .LSP</label>
+                        <label for="folderUpload"
+                            class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-white px-3 py-1 transition-colors flex items-center gap-2 mt-2 sm:mt-0">
+                            <span class="material-symbols-outlined text-[14px]">folder_zip</span> CHỌN FOLDER
+                        </label>
+                        <input type="file" id="folderUpload" webkitdirectory directory multiple class="hidden"
+                            onchange="handleFolderUpload(event)">
+
+                        <input type="file" id="fileUpload" accept=".lsp,.txt" class="hidden"
+                            onchange="handleFileUpload(event)">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Submit Button -->
+            <div class="pt-4">
+                <button id="btnSubmit"
+                    class="w-full bg-primary text-white font-display font-bold text-sm py-5 tracking-[0.3em] uppercase hover:bg-rose-700 transition-colors flex items-center justify-center gap-3 shadow-lg shadow-primary/20"
+                    type="submit">
+                    <span class="material-symbols-outlined text-lg">upload</span>
+                    <span>THỰC THI TẢI LÊN GITHUB</span>
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <!-- VIEW SOURCE MODAL -->
+    <div id="viewSourceModal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity duration-300">
+        <div id="viewSourceModalContainer"
+            class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark w-full max-w-4xl h-[90vh] flex flex-col shadow-2xl transform scale-95 transition-all duration-300">
+            <div
+                class="px-6 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-slate-50 dark:bg-black/50">
+                <h3 id="viewSourceTitle"
+                    class="font-display font-bold text-lg uppercase tracking-wider text-slate-800 dark:text-slate-200">
+                    Mã Nguồn Của Tool</h3>
+                <div class="flex items-center gap-3">
+                    <button onclick="copySourceCode()" id="copySourceBtn"
+                        class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-display text-[10px] tracking-widest uppercase transition-colors flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[14px]">content_copy</span>SAO CHÉP</button>
+                    <button onclick="closeSourceModal()"
+                        class="text-slate-500 hover:text-primary transition-colors flex">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 bg-[#0d1117] relative">
+                <div id="viewSourceLoading"
+                    class="absolute inset-0 flex flex-col items-center justify-center bg-[#0d1117] z-10 hidden">
+                    <span class="material-symbols-outlined text-4xl animate-spin text-primary">sync</span>
+                    <p class="mt-4 font-display text-xs tracking-widest uppercase text-slate-400">ĐANG TẢI MÃ NGUỒN...
+                    </p>
+                </div>
+                <pre><code id="viewSourceContent" class="font-display text-xs text-slate-300 leading-relaxed tabular-nums whitespace-pre-wrap"></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer
+        class="fixed bottom-0 left-0 w-full z-40 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-t border-border-light dark:border-border-dark">
+        <div
+            class="max-w-[1400px] mx-auto px-6 py-4 flex justify-between items-center text-[10px] font-display font-bold uppercase tracking-widest text-slate-900 dark:text-slate-100">
+            <span id="txt-footer-platform">NỀN TẢNG CHIA SẺ MIỄN PHÍ</span>
+            <span
+                class="text-slate-500 font-mono drop-shadow-md cursor-pointer hover:text-primary transition-colors pointer-events-auto"
+                id="txt-footer-copy" onclick="openZaloPopup()">COPYRIGHT © 2026 by Son Ho ZALO 0364847376</span>
+        </div>
+    </footer>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast"
+        class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-4 shadow-xl z-50 flex items-center gap-3 font-display text-xs tracking-wider">
+        <span id="toast-icon" class="material-symbols-outlined text-primary">info</span>
+        <span id="toast-msg">Notification message here</span>
+    </div>
+
+    <!-- LOGIC SCRIPT -->
+    <script>
+        // CẤU HÌNH API VÀ GITHUB
+        const VERCEL_API_URL = "https://lispcad-free.vercel.app/api/upload"; // Điền link vercel API vào đây sau khi deploy
+        const GITHUB_OWNER = "sonho0310";
+        const GITHUB_REPO = "lispcad-data";
+        const GITHUB_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/database.json`;
+
+        let allTools = [];
+        let currentCategory = 'all';
+
+        // Hiển thị Toast
+        function showToast(msg, type = 'info') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            document.getElementById('toast-icon').innerText = type === 'error' ? 'error' : 'check_circle';
+            document.getElementById('toast-icon').className = `material-symbols-outlined ${type === 'error' ? 'text-rose-500' : 'text-emerald-500'}`;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 4000);
+        }
+
+        // Khởi tạo và fetch dữ liệu
+        async function initApp() {
+            try {
+                const response = await fetch(`${GITHUB_RAW_URL}?t=${Date.now()}`);
+                if (!response.ok) throw new Error('Not found or fetch error');
+                allTools = await response.json();
+                if (!Array.isArray(allTools)) allTools = [];
+            } catch (e) {
+                console.log("Fallback to LocalStorage due to fetch error:", e);
+                const local = localStorage.getItem('lisp_db');
+                if (local) allTools = JSON.parse(local);
+            }
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('tools-container').classList.remove('hidden');
+            renderTools();
+        }
+
+        // Render danh sách
+        function renderTools(search = '') {
+            const container = document.getElementById('tools-container');
+            container.innerHTML = '';
+
+            let filtered = allTools.filter(t => {
+                let matchCat = false;
+                if (currentCategory === 'all') matchCat = !t.category || !t.category.startsWith('revit_');
+                else if (currentCategory === 'revit_all') matchCat = t.category && t.category.startsWith('revit_');
+                else matchCat = t.category === currentCategory;
+                const matchSearch = String(t.title).toLowerCase().includes(search.toLowerCase()) || String(t.desc).toLowerCase().includes(search.toLowerCase());
+                return matchCat && matchSearch;
+            });
+
+            // Cập nhật số lượng
+            const revitTools = allTools.filter(t => t.category && t.category.startsWith('revit_'));
+            document.getElementById('count-all').innerText = allTools.filter(t => !t.category || !t.category.startsWith('revit_')).length;
+            document.getElementById('count-cad').innerText = allTools.filter(t => t.category === 'cad').length;
+            document.getElementById('count-lisp').innerText = allTools.filter(t => t.category === 'lisp').length;
+            document.getElementById('count-revit_all').innerText = revitTools.length;
+            document.getElementById('count-revit_addin').innerText = allTools.filter(t => t.category === 'revit_addin').length;
+            document.getElementById('count-revit_dynamo').innerText = allTools.filter(t => t.category === 'revit_dynamo').length;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-full py-12 text-center text-slate-500 font-display text-sm border border-dashed border-border-light dark:border-border-dark">Không tìm thấy công cụ phù hợp.</div>`;
+                return;
+            }
+
+            [...filtered].reverse().forEach(tool => {
+                // Format ngày
+                let dateStr = 'Recently';
+                if (tool.createdAt) {
+                    const d = new Date(tool.createdAt);
+                    dateStr = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+                }
+
+                container.innerHTML += `
+          <div class="group relative bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark p-6 transition-all hover:border-primary/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div class="flex items-start gap-5 flex-1">
+              <div class="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark text-slate-400 group-hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-2xl">${tool.category === 'lisp' ? 'code' : 'view_in_ar'}</span>
+              </div>
+              <div>
+                <h3 class="font-display font-bold text-lg tracking-tight group-hover:text-primary transition-colors uppercase">${tool.title.replace(/'/g, "\\'")}</h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">${tool.desc}</p>
+                <div class="flex gap-2 mt-3">
+                  <span class="text-[9px] px-2 py-0.5 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400">#${(tool.category || 'CAD').toUpperCase()}</span>
+                  <span class="text-[9px] px-2 py-0.5 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">history</span> ${dateStr}</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-3 sm:flex-col lg:flex-row flex-shrink-0 w-full sm:w-auto">
+              <button onclick="openGuideModal('${tool.title.replace(/'/g, "\\'")}', '${encodeURIComponent(tool.guide || '')}')" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
+                HƯỚNG DẪN
+              </button>
+              <button onclick="openSourceModal('${tool.filename}', '${tool.title.replace(/'/g, "\\'")}')" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center justify-center gap-1">
+                <span class="material-symbols-outlined text-sm">code</span> XEM MÃ NGUỒN
+              </button>
+              <button onclick="downloadTool(event, '${tool.filename}', '${tool.title.replace(/'/g, "\\'")}')" class="flex-1 px-5 py-3 sm:py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-display font-bold text-[10px] uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 dark:hover:text-slate-900 transition-colors flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-sm">download</span> TẢI VỀ
+              </button>
+            </div>
+          </div>
+        `;
+            });
+        }
+
+        // Lọc theo Category
+        function filterByCategory(cat, element) {
+            currentCategory = cat;
+            document.querySelectorAll('.category-link').forEach(el => {
+                el.classList.remove('bg-slate-200', 'dark:bg-slate-800', 'border-r-4', 'border-slate-400');
+                el.classList.add('hover:bg-slate-100', 'dark:hover:bg-white/5');
+            });
+            element.classList.remove('hover:bg-slate-100', 'dark:hover:bg-white/5');
+            element.classList.add('bg-slate-200', 'dark:bg-slate-800', 'border-r-4', 'border-slate-400');
+            renderTools(document.getElementById('searchInput').value);
+        }
+
+        function searchTools() {
+            renderTools(document.getElementById('searchInput').value);
+        }
+
+        // Tải File lisp tự động
+        async function downloadTool(event, url, title) {
+            if (url.startsWith('http')) {
+                const btn = event.currentTarget;
+                const ogHtml = btn.innerHTML;
+                try {
+                    btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> FETCHING...';
+                    btn.disabled = true;
+
+                    // Detect if the file is a zip archive (ignoring query parameters)
+                    const baseUrl = url.split('?')[0];
+                    const isZip = baseUrl.toLowerCase().endsWith('.zip');
+
+                    if (isZip) {
+                        const response = await fetch(url);
+                        if (!response.ok) throw new Error('Network error');
+                        const blob = await response.blob();
+
+                        if (window.showSaveFilePicker) {
+                            try {
+                                const handle = await window.showSaveFilePicker({
+                                    suggestedName: title + '.zip',
+                                    types: [{
+                                        description: 'Zip Archive',
+                                        accept: { 'application/zip': ['.zip'] },
+                                    }],
+                                });
+                                const writable = await handle.createWritable();
+                                await writable.write(blob);
+                                await writable.close();
+                                showToast("Đã tải file thành công!", "success");
+                            } catch (err) {
+                                if (err.name !== 'AbortError') throw err;
+                            }
+                        } else {
+                            const blobUrl = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = blobUrl;
+                            a.target = '_blank';
+                            a.download = title + '.zip';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(blobUrl);
+                            showToast("Đã tải file thành công!", "success");
+                        }
+                    } else {
+                        // Regular flow for LSP text code
+                        const response = await fetch(url);
+                        if (!response.ok) throw new Error('Network error');
+                        const text = await response.text();
+
+                        // If content is just a single external link, open it!
+                        const trimmed = text.trim();
+                        if ((trimmed.startsWith('http://') || trimmed.startsWith('https://')) && !trimmed.includes('\\n')) {
+                            window.open(trimmed, '_blank');
+                            btn.innerHTML = ogHtml;
+                            btn.disabled = false;
+                            return;
+                        }
+
+                        // Native Windows File Save Dialog via showSaveFilePicker API
+                        if (window.showSaveFilePicker) {
+                            try {
+                                const handle = await window.showSaveFilePicker({
+                                    suggestedName: title + '.lsp',
+                                    types: [{
+                                        description: 'Lisp File',
+                                        accept: { 'text/plain': ['.lsp'] },
+                                    }],
+                                });
+                                const writable = await handle.createWritable();
+                                await writable.write(text);
+                                await writable.close();
+                                showToast("Đã tải file thành công!", "success");
+                            } catch (err) {
+                                if (err.name !== 'AbortError') throw err;
+                            }
+                        } else {
+                            // Fallback automatically save to default Downloads folder
+                            const blob = new Blob([text], { type: 'text/plain' });
+                            const blobUrl = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = blobUrl;
+                            a.target = '_blank';
+                            a.download = title + '.lsp';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(blobUrl);
+                            showToast("Đã tải file thành công!", "success");
+                        }
+                    }
+
+                    btn.innerHTML = ogHtml;
+                    btn.disabled = false;
+                } catch (e) {
+                    showToast("Lỗi tải file: " + e.message, "error");
+                    btn.innerHTML = ogHtml;
+                    btn.disabled = false;
+                }
+            } else {
+                showToast("Link tải về không hợp lệ", "error");
+            }
+        }
+
+        // Modal logic cho Guide
+        function openGuideModal(title, guideText) {
+            document.getElementById('viewSourceTitle').innerText = title + " - Guide";
+            const contentEl = document.getElementById('viewSourceContent');
+            const loadingEl = document.getElementById('viewSourceLoading');
+            const modal = document.getElementById('viewSourceModal');
+            const container = document.getElementById('viewSourceModalContainer');
+
+            // Set small size for guide
+            container.classList.remove('max-w-4xl', 'h-[90vh]');
+            container.classList.add('max-w-md', 'h-auto', 'max-h-[90vh]');
+
+            loadingEl.classList.add('hidden');
+            contentEl.innerText = guideText ? decodeURIComponent(guideText) : 'No guide provided.';
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            void modal.offsetWidth; // force reflow
+            container.classList.remove('scale-95');
+            container.classList.add('scale-100');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Modal logic cho View Source
+        async function openSourceModal(url, title) {
+            document.getElementById('viewSourceTitle').innerText = title;
+            const contentEl = document.getElementById('viewSourceContent');
+            const loadingEl = document.getElementById('viewSourceLoading');
+            const modal = document.getElementById('viewSourceModal');
+            const container = document.getElementById('viewSourceModalContainer');
+
+            // Set large size for source code
+            container.classList.remove('max-w-md', 'h-auto', 'max-h-[90vh]');
+            container.classList.add('max-w-4xl', 'h-[90vh]');
+
+            contentEl.innerText = "";
+            loadingEl.classList.remove('hidden');
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            void modal.offsetWidth; // force reflow
+            container.classList.remove('scale-95');
+            container.classList.add('scale-100');
+            document.body.style.overflow = 'hidden';
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network error');
+                const text = await response.text();
+                contentEl.innerText = text;
+            } catch (e) {
+                contentEl.innerText = "Error loading source code: " + e.message;
+            } finally {
+                loadingEl.classList.add('hidden');
+            }
+        }
+
+        function closeSourceModal() {
+            const modal = document.getElementById('viewSourceModal');
+            const container = document.getElementById('viewSourceModalContainer');
+
+            container.classList.remove('scale-100');
+            container.classList.add('scale-95');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        async function copySourceCode() {
+            const text = document.getElementById('viewSourceContent').innerText;
+            if (!text) return;
+            try {
+                await navigator.clipboard.writeText(text);
+                const btn = document.getElementById('copySourceBtn');
+                const og = btn.innerHTML;
+                btn.innerHTML = `<span class="material-symbols-outlined text-[14px]">check</span> COPIED`;
+                btn.classList.replace('bg-slate-800', 'bg-emerald-600');
+                btn.classList.replace('hover:bg-slate-700', 'hover:bg-emerald-500');
+                showToast("Source code copied to clipboard!", "success");
+                setTimeout(() => {
+                    btn.innerHTML = og;
+                    btn.classList.replace('bg-emerald-600', 'bg-slate-800');
+                    btn.classList.replace('hover:bg-emerald-500', 'hover:bg-slate-700');
+                }, 2000);
+            } catch (e) {
+                showToast("Failed to copy", "error");
+            }
+        }
+
+        // Logic Upload Add Tool
+        document.getElementById('addToolForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmit');
+            const ogText = btn.innerHTML;
+            btn.innerHTML = `<span class="material-symbols-outlined text-lg animate-spin">sync</span> <span>UPLOADING TO GITHUB...</span>`;
+            btn.disabled = true;
+
+            const newTool = {
+                title: document.getElementById('toolTitle').value,
+                category: document.getElementById('toolCategory').value,
+                desc: document.getElementById('toolDesc').value,
+                guide: document.getElementById('toolGuide').value,
+                toolCode: document.getElementById('toolCode').value,
+                isZip: window.isZipUpload === true
+            };
+            window.isZipUpload = false;
+
+            if (VERCEL_API_URL !== "") {
+                try {
+                    const res = await fetch(VERCEL_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newTool)
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || 'Upload failed');
+
+                    allTools.push(data.tool);
+                    showToast("Tải lên GitHub thành công!", "success");
+                    hideSubmissionForm();
+                    document.getElementById('addToolForm').reset();
+                    renderTools();
+                } catch (err) {
+                    console.error(err);
+                    showToast("Error: " + err.message, "error");
+                }
+            } else {
+                // Fallback Local
+                const dummyUrl = "#";
+                const locTool = { id: Date.now(), ...newTool, filename: dummyUrl, createdAt: new Date().toISOString() };
+                allTools.push(locTool);
+                localStorage.setItem('lisp_db', JSON.stringify(allTools));
+                showToast("Đã lưu cục bộ (chưa cài link API)", "success");
+                hideSubmissionForm();
+                document.getElementById('addToolForm').reset();
+                renderTools();
+            }
+
+            btn.innerHTML = ogText;
+            btn.disabled = false;
+        });
+
+        // Xử lý kéo thả file & thư mục
+        window.isZipUpload = false;
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                window.isZipUpload = false;
+                readFileContent(file);
+            }
+        }
+
+        async function handleFolderUpload(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            const zip = new JSZip();
+            let totalSize = 0;
+            const MAX_SIZE = 50 * 1024 * 1024; // 50MB
+
+            document.getElementById('toolCode').value = "Đang nén thư mục, vui lòng đợi...";
+
+            try {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    totalSize += file.size;
+                    if (totalSize > MAX_SIZE) throw new Error("Vượt quá 50MB");
+                    zip.file(file.webkitRelativePath || file.name, file);
+                }
+                const content = await zip.generateAsync({ type: "base64", compression: "DEFLATE", compressionOptions: { level: 6 } });
+                window.isZipUpload = true;
+                document.getElementById('toolCode').value = content;
+                showToast("Đã nén thư mục (" + (totalSize / (1024 * 1024)).toFixed(2) + "MB)", "success");
+            } catch (err) {
+                document.getElementById('toolCode').value = "";
+                showToast(err.message === "Vượt quá 50MB" ? "Thư mục quá lớn (>50MB)" : "Lỗi nén thư mục", "error");
+            }
+        }
+
+        async function handleFileDrop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('border-primary');
+
+            const items = event.dataTransfer.items;
+            if (items && items.length > 0) {
+                const entry = items[0].webkitGetAsEntry ? items[0].webkitGetAsEntry() : null;
+                if (entry && entry.isDirectory) {
+                    await processFolderDrop(items);
+                    return;
+                }
+            }
+
+            const file = event.dataTransfer.files[0];
+            if (file) {
+                window.isZipUpload = false;
+                readFileContent(file);
+            }
+        }
+
+        async function processFolderDrop(items) {
+            const zip = new JSZip();
+            let totalSize = 0;
+            const MAX_SIZE = 50 * 1024 * 1024;
+            document.getElementById('toolCode').value = "Đang nén thư mục, vui lòng đợi...";
+
+            async function traverse(item, path) {
+                if (item.isFile) {
+                    const file = await new Promise(resolve => item.file(resolve));
+                    totalSize += file.size;
+                    if (totalSize > MAX_SIZE) throw new Error("Vượt quá 50MB");
+                    zip.file(path + file.name, file);
+                } else if (item.isDirectory) {
+                    const dirReader = item.createReader();
+                    const entries = await new Promise(resolve => {
+                        let result = [];
+                        const readEntries = () => {
+                            dirReader.readEntries(batch => {
+                                if (!batch.length) resolve(result);
+                                else { result = result.concat(batch); readEntries(); }
+                            });
+                        };
+                        readEntries();
+                    });
+                    for (let entry of entries) await traverse(entry, path + item.name + "/");
+                }
+            }
+
+            try {
+                for (let i = 0; i < items.length; i++) {
+                    const item = items[i].webkitGetAsEntry ? items[i].webkitGetAsEntry() : null;
+                    if (item) await traverse(item, "");
+                }
+                const content = await zip.generateAsync({ type: "base64", compression: "DEFLATE", compressionOptions: { level: 6 } });
+                window.isZipUpload = true;
+                document.getElementById('toolCode').value = content;
+                showToast("Đã nén thư mục (" + (totalSize / (1024 * 1024)).toFixed(2) + "MB)", "success");
+            } catch (err) {
+                document.getElementById('toolCode').value = "";
+                showToast(err.message === "Vượt quá 50MB" ? "Thư mục quá lớn (>50MB)" : "Lỗi nén", "error");
+            }
+        }
+
+        function readFileContent(file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('toolCode').value = e.target.result;
+                showToast("File loaded successfully!", "success");
+            };
+            reader.onerror = function () {
+                showToast("Error reading file", "error");
+            };
+            reader.readAsText(file);
+        }
+
+
+        // Chạy app
+        window.onload = initApp;
+
+        // Zalo Modal Logic
+        function openZaloPopup() {
+            const m = document.getElementById('zaloModal');
+            const c = document.getElementById('zaloModalContent');
+            if (m && c) {
+                m.classList.remove('hidden');
+                m.classList.add('flex');
+                void m.offsetWidth; // force reflow
+                c.classList.remove('scale-95');
+                c.classList.add('scale-100');
+            }
+        }
+        function closeZaloPopup() {
+            const m = document.getElementById('zaloModal');
+            const c = document.getElementById('zaloModalContent');
+            if (m && c) {
+                c.classList.remove('scale-100');
+                c.classList.add('scale-95');
+                setTimeout(() => {
+                    m.classList.add('hidden');
+                    m.classList.remove('flex');
+                }, 300);
+            }
+        }
+        async function copyZaloNumber() {
+            try {
+                await navigator.clipboard.writeText('0364847376');
+                const btn = document.getElementById('btnCopyZaloText');
+                const og = btn.innerHTML;
+                btn.innerHTML = `COPIED`;
+
+                const btnWrap = document.getElementById('btnCopyZalo');
+                btnWrap.classList.add('bg-blue-500', 'text-white');
+                btnWrap.classList.remove('text-blue-500', 'bg-blue-500/10');
+
+                // Change icon
+                const icon = document.getElementById('zaloCopyIcon');
+                icon.innerText = 'check';
+
+                showToast("Đã chép số Zalo: 0364847376", "success");
+                setTimeout(() => {
+                    btn.innerHTML = og;
+                    btnWrap.classList.remove('bg-blue-500', 'text-white');
+                    btnWrap.classList.add('text-blue-500', 'bg-blue-500/10');
+                    icon.innerText = 'content_copy';
+                }, 2000);
+            } catch (e) {
+                showToast("Lỗi khi chép số", "error");
+            }
+        }
+    </script>
+
+    <!-- ZALO MODAL -->
+    <div id="zaloModal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity duration-300">
+        <div class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark w-full max-w-sm flex flex-col shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300"
+            id="zaloModalContent">
+            <div class="p-8 flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-blue-500/10 text-blue-500 rounded-full flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-3xl">chat</span>
+                </div>
+                <h3 class="font-display font-bold text-xl mb-2 text-slate-900 dark:text-white uppercase tracking-wider">
+                    Liên hệ Zalo</h3>
+                <p class="text-slate-500 text-sm font-display mb-8">Bạn có thể copy số điện thoại Zalo của SONHPA bên
+                    dưới để trao đổi thêm.</p>
+
+                <div
+                    class="w-full bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between mb-8 group hover:border-blue-500/50 transition-colors">
+                    <span
+                        class="font-mono text-lg font-bold tracking-widest text-slate-800 dark:text-slate-200">0364847376</span>
+                    <button onclick="copyZaloNumber()" id="btnCopyZalo"
+                        class="text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1 text-[10px] font-display font-bold uppercase tracking-wider bg-blue-500/10 px-3 py-1.5 rounded">
+                        <span class="material-symbols-outlined text-[14px]" id="zaloCopyIcon">content_copy</span> <span
+                            id="btnCopyZaloText">COPY</span>
+                    </button>
+                </div>
+
+                <button onclick="closeZaloPopup()"
+                    class="w-full py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-display font-bold text-xs uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors">
+                    ĐÓNG
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
