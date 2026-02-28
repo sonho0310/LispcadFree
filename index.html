@@ -305,20 +305,32 @@
             <div
                 class="px-6 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-slate-50 dark:bg-black/50">
                 <h3 class="font-display font-bold text-lg uppercase tracking-wider text-slate-800 dark:text-slate-200">
-                    Thêm Thư Mục Mới</h3>
+                    Danh Mục</h3>
                 <button onclick="closeCategoryModal()" class="text-slate-500 hover:text-primary transition-colors flex">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            <div class="p-6">
+
+            <!-- TABS -->
+            <div class="flex border-b border-border-light dark:border-border-dark bg-slate-50 dark:bg-black/30">
+                <button onclick="switchCategoryTab('add')" id="tabBtn-add"
+                    class="flex-1 py-3 text-xs font-display font-bold tracking-widest uppercase transition-colors text-primary border-b-2 border-primary bg-white dark:bg-black">Thêm
+                    Mới</button>
+                <button onclick="switchCategoryTab('manage')" id="tabBtn-manage"
+                    class="flex-1 py-3 text-xs font-display font-bold tracking-widest uppercase transition-colors text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border-b-2 border-transparent">Quản
+                    Lý</button>
+            </div>
+
+            <!-- TAB ADD -->
+            <div class="p-6 block" id="tabContent-add">
                 <form id="addCategoryForm" class="space-y-4">
                     <div class="space-y-2">
                         <label
                             class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Mật
-                            khẩu Admin *</label>
-                        <input required id="catAdminPwd" type="password"
+                            khẩu *</label>
+                        <input required id="catAdminPwdAdd" type="password"
                             class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
-                            placeholder="Nhập admin password..." />
+                            placeholder="Hãy nhập mật khẩu..." />
                     </div>
                     <div class="space-y-2">
                         <label
@@ -354,6 +366,27 @@
                     </div>
                 </form>
             </div>
+
+            <!-- TAB MANAGE -->
+            <div class="hidden flex-col h-[450px]" id="tabContent-manage">
+                <div class="p-4 border-b border-border-light dark:border-border-dark bg-slate-50 dark:bg-black/30">
+                    <label
+                        class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500 mb-2">Mật
+                        khẩu xác nhận *</label>
+                    <div class="flex gap-2">
+                        <input id="catAdminPwdManage" type="password"
+                            class="w-full bg-white dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-2 focus:outline-none focus:border-primary"
+                            placeholder="Nhập để xoá/lưu..." />
+                        <button onclick="saveCategoryOrder()" id="btnSaveOrder"
+                            class="bg-primary text-white px-4 text-xs font-bold uppercase tracking-wider hover:bg-rose-700 transition flex items-center gap-1 whitespace-nowrap">
+                            <span class="material-symbols-outlined text-sm">save</span> LƯU
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4 overflow-y-auto flex-1 bg-slate-100/50 dark:bg-black/20" id="categoryManageList">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
         </div>
     </div>
 
@@ -381,10 +414,11 @@
         // CẤU HÌNH API VÀ GITHUB
         const VERCEL_API_URL = "https://lispcad-free.vercel.app/api/upload";
         const VERCEL_API_CATEGORY_URL = "https://lispcad-free.vercel.app/api/category";
+        const VERCEL_API_MANAGE_CATEGORY_URL = "https://lispcad-free.vercel.app/api/manage-category";
         const GITHUB_OWNER = "sonho0310";
         const GITHUB_REPO = "lispcad-data";
-        const GITHUB_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/database.json`;
-        const CATEGORY_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/categories.json`;
+        const GITHUB_RAW_BASE_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/`;
+        const CATEGORY_RAW_URL = `${GITHUB_RAW_BASE_URL}categories.json`;
 
         let allTools = [];
         let allCategories = [
@@ -422,10 +456,21 @@
             }
 
             try {
-                const response = await fetch(`${GITHUB_RAW_URL}?t=${Date.now()}`);
-                if (!response.ok) throw new Error('Not found or fetch error');
-                allTools = await response.json();
-                if (!Array.isArray(allTools)) allTools = [];
+                // Get unique safe names for main categories
+                const mains = [...new Set(allCategories.map(c => {
+                    return c.main.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase() || 'autocad';
+                }))];
+                if (mains.length === 0) mains.push('autocad');
+
+                // Fetch all database files simultaneously
+                const fetchPromises = mains.map(main =>
+                    fetch(`${GITHUB_RAW_BASE_URL}database_${main}.json?t=${Date.now()}`)
+                        .then(res => res.ok ? res.json() : [])
+                        .catch(() => [])
+                );
+
+                const results = await Promise.all(fetchPromises);
+                allTools = results.flat();
             } catch (e) {
                 console.log("Fallback to LocalStorage due to fetch error:", e);
                 const local = localStorage.getItem('lisp_db');
@@ -436,26 +481,19 @@
 
             renderCategoriesSidebar();
             renderCategorySelectInputs();
+            renderCategoryManageList();
             renderTools();
         }
 
         function renderCategoriesSidebar() {
             const sidebar = document.getElementById('sidebar-categories');
-            let html = `
-                <nav class="space-y-2" id="category-nav">
-                    <a href="#" onclick="filterByCategory('all', this)"
-                        class="category-link flex items-center justify-between px-4 py-3 bg-slate-200 dark:bg-slate-800 border-r-4 border-slate-400 group transition-all mb-4">
-                        <div class="flex items-center gap-4">
-                            <span class="material-symbols-outlined text-2xl">apps</span>
-                            <span class="font-display text-xs font-bold tracking-widest uppercase">Tất Cả Công Cụ</span>
-                        </div>
-                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-all">0</span>
-                    </a>
-                </nav>
-            `;
+            let html = ``;
 
             // Group by main folder array
             const groups = {};
+            // Group AutoCAD will come first with the special "Tất Cả AutoCAD" link
+            groups['AutoCAD'] = [];
+
             allCategories.forEach(c => {
                 if (!groups[c.main]) groups[c.main] = [];
                 groups[c.main].push(c);
@@ -468,6 +506,21 @@
                 </h2>
                 <nav class="space-y-2">
                 `;
+
+                // Add "Tất Cả AutoCAD" automatically to the AutoCAD group
+                if (main === 'AutoCAD') {
+                    html += `
+                    <a href="#" onclick="filterByCategory('all', this)"
+                        class="category-link flex items-center justify-between px-4 py-3 bg-slate-200 dark:bg-slate-800 border-r-4 border-slate-400 group transition-all mb-4">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-2xl">apps</span>
+                            <span class="font-display text-xs font-bold tracking-widest uppercase">Tất Cả AutoCAD</span>
+                        </div>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-all">0</span>
+                    </a>
+                    `;
+                }
+
                 cats.forEach(c => {
                     html += `
                     <a href="#" onclick="filterByCategory('${c.id}', this)"
@@ -1030,7 +1083,7 @@
             btn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">sync</span> ĐANG TẠO...`;
             btn.disabled = true;
 
-            const password = document.getElementById('catAdminPwd').value;
+            const password = document.getElementById('catAdminPwdAdd').value;
             let main = document.getElementById('catMainFolder').value;
             if (main === 'NEW_MAIN') main = document.getElementById('catNewMainName').value;
 
@@ -1069,6 +1122,162 @@
                 btn.disabled = false;
             }
         });
+
+        // Logic Switch Tab Category
+        function switchCategoryTab(tab) {
+            const btnAdd = document.getElementById('tabBtn-add');
+            const btnManage = document.getElementById('tabBtn-manage');
+            const contentAdd = document.getElementById('tabContent-add');
+            const contentManage = document.getElementById('tabContent-manage');
+
+            if (tab === 'add') {
+                btnAdd.className = "flex-1 py-3 text-xs font-display font-bold tracking-widest uppercase transition-colors text-primary border-b-2 border-primary bg-white dark:bg-black";
+                btnManage.className = "flex-1 py-3 text-xs font-display font-bold tracking-widest uppercase transition-colors text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border-b-2 border-transparent";
+                contentAdd.classList.replace('hidden', 'block');
+                contentManage.classList.replace('flex', 'hidden');
+                contentManage.classList.remove('flex-col');
+            } else {
+                btnManage.className = "flex-1 py-3 text-xs font-display font-bold tracking-widest uppercase transition-colors text-primary border-b-2 border-primary bg-white dark:bg-black";
+                btnAdd.className = "flex-1 py-3 text-xs font-display font-bold tracking-widest uppercase transition-colors text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border-b-2 border-transparent";
+                contentAdd.classList.replace('block', 'hidden');
+                contentManage.classList.replace('hidden', 'flex');
+                contentManage.classList.add('flex-col');
+                renderCategoryManageList();
+            }
+        }
+
+        function renderCategoryManageList() {
+            const list = document.getElementById('categoryManageList');
+            if (!list) return;
+            let html = '';
+            allCategories.forEach((c, index) => {
+                html += `
+                <div class="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 mb-2 rounded shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-slate-400 text-lg">${c.icon}</span>
+                        <div>
+                            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">${c.main}</div>
+                            <div class="text-sm font-bold text-slate-700 dark:text-slate-200">${c.name}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button onclick="moveCategoryUp(${index})" class="p-1 text-slate-400 hover:text-primary transition-colors disabled:opacity-30 disabled:hover:text-slate-400" ${index === 0 ? 'disabled' : ''}>
+                            <span class="material-symbols-outlined text-lg">arrow_upward</span>
+                        </button>
+                        <button onclick="moveCategoryDown(${index})" class="p-1 text-slate-400 hover:text-primary transition-colors disabled:opacity-30 disabled:hover:text-slate-400" ${index === allCategories.length - 1 ? 'disabled' : ''}>
+                            <span class="material-symbols-outlined text-lg">arrow_downward</span>
+                        </button>
+                        <button onclick="confirmDeleteCategory('${c.id}')" class="p-1 text-slate-400 hover:text-rose-500 transition-colors ml-2">
+                            <span class="material-symbols-outlined text-lg border-l border-slate-300 dark:border-slate-700 pl-3">delete</span>
+                        </button>
+                    </div>
+                </div>
+                `;
+            });
+            list.innerHTML = html;
+        }
+
+        function moveCategoryUp(index) {
+            if (index > 0) {
+                const temp = allCategories[index];
+                allCategories[index] = allCategories[index - 1];
+                allCategories[index - 1] = temp;
+                renderCategoryManageList();
+            }
+        }
+
+        function moveCategoryDown(index) {
+            if (index < allCategories.length - 1) {
+                const temp = allCategories[index];
+                allCategories[index] = allCategories[index + 1];
+                allCategories[index + 1] = temp;
+                renderCategoryManageList();
+            }
+        }
+
+        async function saveCategoryOrder() {
+            const password = document.getElementById('catAdminPwdManage').value;
+            if (!password) return showToast("Vui lòng nhập mật khẩu", "error");
+
+            const btn = document.getElementById('btnSaveOrder');
+            const ogHtml = btn.innerHTML;
+            btn.innerHTML = `<span class="material-symbols-outlined text-sm animate-spin">sync</span>`;
+
+            try {
+                const order = allCategories.map(c => c.id);
+                const res = await fetch(VERCEL_API_MANAGE_CATEGORY_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'reorder', password, order })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "Lỗi lưu thứ tự");
+
+                allCategories = data.updatedCategories || allCategories;
+                renderCategoriesSidebar();
+                renderCategorySelectInputs();
+                showToast("Đã lưu thứ tự danh mục!", "success");
+            } catch (err) {
+                showToast(err.message, "error");
+            } finally {
+                btn.innerHTML = ogHtml;
+                document.getElementById('catAdminPwdManage').value = '';
+            }
+        }
+
+        function confirmDeleteCategory(id) {
+            const password = document.getElementById('catAdminPwdManage').value;
+            if (!password) {
+                showToast("Vui lòng nhập mật khẩu xác nhận trước ở phía trên", "error");
+                document.getElementById('catAdminPwdManage').focus();
+                return;
+            }
+
+            const cat = allCategories.find(c => c.id === id);
+            if (!cat) return;
+
+            // Generate Prompt for target
+            const validTargets = allCategories.filter(c => c.id !== id);
+            let options = validTargets.map(c => `[ID: ${c.id}] ${c.main} -> ${c.name}`).join('\\n');
+            const targetId = prompt(`Xoá danh mục "${cat.name}". Vui lòng nhập ID danh mục đích để chuyển các tool sang:\\n\\n${options}`);
+
+            if (targetId !== null) {
+                const foundTarget = validTargets.find(c => c.id === targetId.trim());
+                if (foundTarget) {
+                    executeDeleteCategory(id, foundTarget.id, password);
+                } else {
+                    showToast("ID danh mục đích không hợp lệ. Đã huỷ thao tác xoá.", "error");
+                }
+            }
+        }
+
+        async function executeDeleteCategory(id_to_delete, id_target, password) {
+            try {
+                showToast("Đang xóa danh mục...", "info");
+                const res = await fetch(VERCEL_API_MANAGE_CATEGORY_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'delete', password, id_to_delete, id_target })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "Lỗi xóa danh mục");
+
+                showToast("Đã xoá thành công và chuyển Tools!", "success");
+                allCategories = data.updatedCategories || allCategories;
+
+                // Update local tools for immediate UI feedback
+                allTools.forEach(t => {
+                    if (t.category === id_to_delete) t.category = id_target;
+                });
+
+                renderCategoryManageList();
+                renderCategoriesSidebar();
+                renderCategorySelectInputs();
+                renderTools(document.getElementById('searchInput').value);
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
 
         // Zalo Modal Logic
         function openZaloPopup() {
