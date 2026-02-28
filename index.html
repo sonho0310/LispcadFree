@@ -380,6 +380,14 @@
         const CATEGORY_RAW_URL = `${GITHUB_RAW_BASE_URL}categories.json`;
 
         let allTools = [];
+        let globalAdminPassword = null;
+
+        async function loginAdmin() {
+            const password = prompt("Hãy nhập mật khẩu để truy cập quyền quản lý:");
+            if (!password) return false;
+            globalAdminPassword = password;
+            return true;
+        }
         let allCategories = [
             { main: "AutoCAD", id: "cad", name: "BLOCK - LAYOUT", icon: "view_in_ar" },
             { main: "AutoCAD", id: "lisp", name: "Layer - Polyline", icon: "code" },
@@ -539,7 +547,11 @@
             }
         }
 
-        function showCategoryForm() {
+        async function showCategoryForm() {
+            if (!globalAdminPassword) {
+                const success = await loginAdmin();
+                if (!success) return;
+            }
             document.getElementById('addCategoryModal').classList.remove('hidden');
             document.getElementById('addCategoryModal').classList.add('flex');
             setTimeout(() => {
@@ -1165,14 +1177,11 @@
             }, 300);
         }
 
-        function confirmDeleteCategory(id) {
-            const password = document.getElementById('catAdminPwdManage').value;
-            if (!password) {
-                showToast("Vui lòng nhập mật khẩu xác nhận trước ở phía trên", "error");
-                document.getElementById('catAdminPwdManage').focus();
-                return;
+        async function confirmDeleteCategory(id) {
+            if (!globalAdminPassword) {
+                const success = await loginAdmin();
+                if (!success) return;
             }
-
             const cat = allCategories.find(c => c.id === id);
             if (!cat) return;
             categoryToDeleteId = id;
@@ -1254,7 +1263,7 @@
                 btn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">sync</span> ĐANG TẠO...`;
                 btn.disabled = true;
 
-                const password = document.getElementById('catAdminPwdAdd').value;
+                const password = globalAdminPassword;
                 let main = document.getElementById('catMainFolder').value;
                 if (main === 'NEW_MAIN') main = document.getElementById('catNewMainName').value;
 
@@ -1300,7 +1309,7 @@
 
             document.getElementById('btnConfirmDeleteFinal')?.addEventListener('click', () => {
                 const targetId = document.getElementById('migrationTargetSelect').value;
-                const password = document.getElementById('catAdminPwdManage').value;
+                const password = globalAdminPassword;
                 executeDeleteCategory(categoryToDeleteId, targetId, password);
             });
         });
@@ -1484,11 +1493,9 @@
                 <form id="addCategoryForm" class="space-y-4">
                     <div class="space-y-2">
                         <label
-                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Mật
-                            khẩu *</label>
-                        <input required id="catAdminPwdAdd" type="password"
-                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
-                            placeholder="Hãy nhập mật khẩu..." />
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500 text-center py-2 bg-slate-100 dark:bg-white/5 rounded">
+                            QUYỀN QUẢN TRỊ VIÊN ĐÃ XÁC THỰC
+                        </label>
                     </div>
                     <div class="space-y-2">
                         <label
@@ -1528,13 +1535,7 @@
             <!-- TAB MANAGE -->
             <div class="hidden flex-col h-[450px]" id="tabContent-manage">
                 <div class="p-4 border-b border-border-light dark:border-border-dark bg-slate-50 dark:bg-black/30">
-                    <label
-                        class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500 mb-2">Mật
-                        khẩu xác nhận *</label>
                     <div class="flex gap-2">
-                        <input id="catAdminPwdManage" type="password"
-                            class="w-full bg-white dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-2 focus:outline-none focus:border-primary"
-                            placeholder="Nhập để xoá/lưu..." />
                         <button onclick="saveCategoryOrder()" id="btnSaveOrder"
                             class="bg-primary text-white px-4 text-xs font-bold uppercase tracking-wider hover:bg-rose-700 transition flex items-center gap-1 whitespace-nowrap">
                             <span class="material-symbols-outlined text-sm">save</span> LƯU
