@@ -108,7 +108,7 @@
         <aside class="w-full md:w-72 flex-shrink-0 relative">
             <div class="sticky top-24 pb-8">
                 <h2
-                    class="font-display text-[15px] font-bold uppercase tracking-[0.25em] text-slate-400 mb-6 flex items-center gap-2">
+                    class="font-display text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 mb-6 flex items-center gap-2">
                     <span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span>Autocad
                 </h2>
                 <nav class="space-y-2" id="category-nav">
@@ -126,7 +126,8 @@
                             <span
                                 class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">view_in_ar</span>
                             <span
-                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">BLOCK</span>
+                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">BLOCK
+                                - LAYOUT</span>
                         </div>
                         <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-cad">0</span>
                     </a>
@@ -143,7 +144,7 @@
                     </a>
                 </nav>
                 <h2
-                    class="font-display text-[15px] font-bold uppercase tracking-[0.25em] text-slate-400 mt-10 mb-6 flex items-center gap-2">
+                    class="font-display text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 mt-10 mb-6 flex items-center gap-2">
                     <span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span>Revit
                 </h2>
                 <nav class="space-y-2" id="category-revit-nav">
@@ -259,8 +260,8 @@
                         <select id="toolCategory"
                             class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary">
                             <optgroup label="AutoCAD">
-                                <option value="BLOCK">BLOCK</option>
-                                <option value="Layer - Polyline">Layer - Polyline</option>
+                                <option value="cad">BLOCK - LAYOUT</option>
+                                <option value="lisp">Layer - Polyline</option>
                             </optgroup>
                             <optgroup label="Revit">
                                 <option value="revit_addin">Revit Addin</option>
@@ -443,6 +444,8 @@
                 let matchCat = false;
                 if (currentCategory === 'all') matchCat = !t.category || !t.category.startsWith('revit_');
                 else if (currentCategory === 'revit_all') matchCat = t.category && t.category.startsWith('revit_');
+                else if (currentCategory === 'cad') matchCat = t.category === 'cad' || t.category === 'BLOCK' || t.category === 'BLOCK - LAYOUT';
+                else if (currentCategory === 'lisp') matchCat = t.category === 'lisp' || t.category === 'Layer - Polyline';
                 else matchCat = t.category === currentCategory;
                 const matchSearch = String(t.title).toLowerCase().includes(search.toLowerCase()) || String(t.desc).toLowerCase().includes(search.toLowerCase());
                 return matchCat && matchSearch;
@@ -451,8 +454,8 @@
             // Cập nhật số lượng
             const revitTools = allTools.filter(t => t.category && t.category.startsWith('revit_'));
             document.getElementById('count-all').innerText = allTools.filter(t => !t.category || !t.category.startsWith('revit_')).length;
-            document.getElementById('count-cad').innerText = allTools.filter(t => t.category === 'cad').length;
-            document.getElementById('count-lisp').innerText = allTools.filter(t => t.category === 'lisp').length;
+            document.getElementById('count-cad').innerText = allTools.filter(t => t.category === 'cad' || t.category === 'BLOCK' || t.category === 'BLOCK - LAYOUT').length;
+            document.getElementById('count-lisp').innerText = allTools.filter(t => t.category === 'lisp' || t.category === 'Layer - Polyline').length;
             document.getElementById('count-revit_all').innerText = revitTools.length;
             document.getElementById('count-revit_addin').innerText = allTools.filter(t => t.category === 'revit_addin').length;
             document.getElementById('count-revit_dynamo').innerText = allTools.filter(t => t.category === 'revit_dynamo').length;
@@ -471,8 +474,8 @@
                 }
 
                 let catDisplay = (tool.category || 'CAD').toUpperCase().replace('REVIT_', 'REVIT ');
-                if (tool.category === 'cad') catDisplay = 'BLOCK';
-                else if (tool.category === 'lisp') catDisplay = 'LAYER - POLYLINE';
+                if (tool.category === 'cad' || tool.category === 'BLOCK' || tool.category === 'BLOCK - LAYOUT') catDisplay = 'BLOCK - LAYOUT';
+                else if (tool.category === 'lisp' || tool.category === 'Layer - Polyline') catDisplay = 'LAYER - POLYLINE';
 
                 container.innerHTML += `
           <div class="group relative bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark p-6 transition-all hover:border-primary/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
