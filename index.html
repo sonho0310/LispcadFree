@@ -94,6 +94,9 @@
                 <button class="p-2 text-slate-400 hover:text-primary transition-colors" onclick="toggleDarkMode()">
                     <span class="material-symbols-outlined text-xl">contrast</span>
                 </button>
+                <button onclick="showCategoryForm()" id="btn-submit-category"
+                    class="bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-6 py-2 text-[11px] font-display font-bold uppercase tracking-widest hover:bg-slate-300 dark:hover:bg-slate-700 transition-all shadow-sm">THÊM
+                    THƯ MỤC</button>
                 <button onclick="showSubmissionForm()" id="btn-submit-tool"
                     class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2 text-[11px] font-display font-bold uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 dark:hover:text-slate-900 transition-all shadow-sm">THÊM
                     TOOL</button>
@@ -106,85 +109,8 @@
 
         <!-- Sidebar -->
         <aside class="w-full md:w-72 flex-shrink-0 relative">
-            <div class="sticky top-24 pb-8">
-                <h2
-                    class="font-display text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 mb-6 flex items-center gap-2">
-                    <span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span>Autocad
-                </h2>
-                <nav class="space-y-2" id="category-nav">
-                    <a href="#" onclick="filterByCategory('all', this)"
-                        class="category-link flex items-center justify-between px-4 py-3 bg-slate-200 dark:bg-slate-800 border-r-4 border-slate-400 group transition-all mb-4">
-                        <div class="flex items-center gap-4">
-                            <span class="material-symbols-outlined text-2xl">apps</span>
-                            <span class="font-display text-xs font-bold tracking-widest uppercase">Tất Cả Công Cụ</span>
-                        </div>
-                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-all">0</span>
-                    </a>
-                    <a href="#" onclick="filterByCategory('cad', this)"
-                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
-                        <div class="flex items-center gap-4">
-                            <span
-                                class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">view_in_ar</span>
-                            <span
-                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">BLOCK
-                                - LAYOUT</span>
-                        </div>
-                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-cad">0</span>
-                    </a>
-                    <a href="#" onclick="filterByCategory('lisp', this)"
-                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
-                        <div class="flex items-center gap-4">
-                            <span
-                                class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">code</span>
-                            <span
-                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Layer
-                                - Polyline </span>
-                        </div>
-                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-lisp">0</span>
-                    </a>
-                </nav>
-                <h2
-                    class="font-display text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 mt-10 mb-6 flex items-center gap-2">
-                    <span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span>Revit
-                </h2>
-                <nav class="space-y-2" id="category-revit-nav">
-                    <a href="#" onclick="filterByCategory('revit_all', this)"
-                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
-                        <div class="flex items-center gap-4">
-                            <span
-                                class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">domain</span>
-                            <span
-                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Tất
-                                Cả Revit</span>
-                        </div>
-                        <span class="text-sm font-mono font-bold !text-black dark:!text-white"
-                            id="count-revit_all">0</span>
-                    </a>
-                    <a href="#" onclick="filterByCategory('revit_addin', this)"
-                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
-                        <div class="flex items-center gap-4">
-                            <span
-                                class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">extension</span>
-                            <span
-                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Revit
-                                Addin</span>
-                        </div>
-                        <span class="text-sm font-mono font-bold !text-black dark:!text-white"
-                            id="count-revit_addin">0</span>
-                    </a>
-                    <a href="#" onclick="filterByCategory('revit_dynamo', this)"
-                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
-                        <div class="flex items-center gap-4">
-                            <span
-                                class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">account_tree</span>
-                            <span
-                                class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Revit
-                                Dynamo</span>
-                        </div>
-                        <span class="text-sm font-mono font-bold !text-black dark:!text-white"
-                            id="count-revit_dynamo">0</span>
-                    </a>
-                </nav>
+            <div class="sticky top-24 pb-8" id="sidebar-categories">
+                <!-- Categories rendered dynamically here -->
             </div>
         </aside>
 
@@ -259,14 +185,7 @@
                             Mục</label>
                         <select id="toolCategory"
                             class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary">
-                            <optgroup label="AutoCAD">
-                                <option value="cad">BLOCK - LAYOUT</option>
-                                <option value="lisp">Layer - Polyline</option>
-                            </optgroup>
-                            <optgroup label="Revit">
-                                <option value="revit_addin">Revit Addin</option>
-                                <option value="revit_dynamo">Revit Dynamo</option>
-                            </optgroup>
+                            <!-- Populated dynamically -->
                         </select>
                     </div>
                     <div class="space-y-2">
@@ -378,6 +297,66 @@
         </div>
     </div>
 
+    <!-- ADD CATEGORY MODAL -->
+    <div id="addCategoryModal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity duration-300">
+        <div id="addCategoryModalContainer"
+            class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark w-full max-w-md h-auto flex flex-col shadow-2xl transform scale-95 transition-all duration-300">
+            <div
+                class="px-6 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-slate-50 dark:bg-black/50">
+                <h3 class="font-display font-bold text-lg uppercase tracking-wider text-slate-800 dark:text-slate-200">
+                    Thêm Thư Mục Mới</h3>
+                <button onclick="closeCategoryModal()" class="text-slate-500 hover:text-primary transition-colors flex">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="p-6">
+                <form id="addCategoryForm" class="space-y-4">
+                    <div class="space-y-2">
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Mật
+                            khẩu Admin *</label>
+                        <input required id="catAdminPwd" type="password"
+                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
+                            placeholder="Nhập admin password..." />
+                    </div>
+                    <div class="space-y-2">
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Thư
+                            mục gốc *</label>
+                        <select id="catMainFolder" onchange="toggleNewMainFolder()"
+                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary">
+                            <!-- Populated dynamically -->
+                            <option value="NEW_MAIN">+ Thêm thư mục gốc mới...</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2 hidden" id="customMainFolderContainer">
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Tên
+                            thư mục gốc mới *</label>
+                        <input id="catNewMainName"
+                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
+                            placeholder="VD: Photoshop" type="text" />
+                    </div>
+                    <div class="space-y-2">
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Tên
+                            thư mục con (Subfolder) *</label>
+                        <input required id="catSubName"
+                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
+                            placeholder="VD: Scripts Mới" type="text" />
+                    </div>
+                    <div class="pt-4">
+                        <button id="btnSubmitCategory" type="submit"
+                            class="w-full bg-primary text-white font-display font-bold text-sm py-4 tracking-[0.2em] uppercase hover:bg-rose-700 transition-colors flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-base">create_new_folder</span> TẠO THƯ MỤC
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- FOOTER -->
     <footer
         class="fixed bottom-0 left-0 w-full z-40 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-t border-border-light dark:border-border-dark">
@@ -400,12 +379,22 @@
     <!-- LOGIC SCRIPT -->
     <script>
         // CẤU HÌNH API VÀ GITHUB
-        const VERCEL_API_URL = "https://lispcad-free.vercel.app/api/upload"; // Điền link vercel API vào đây sau khi deploy
+        const VERCEL_API_URL = "https://lispcad-free.vercel.app/api/upload";
+        const VERCEL_API_CATEGORY_URL = "https://lispcad-free.vercel.app/api/category";
         const GITHUB_OWNER = "sonho0310";
         const GITHUB_REPO = "lispcad-data";
         const GITHUB_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/database.json`;
+        const CATEGORY_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/categories.json`;
 
         let allTools = [];
+        let allCategories = [
+            { main: "AutoCAD", id: "cad", name: "BLOCK - LAYOUT", icon: "view_in_ar" },
+            { main: "AutoCAD", id: "lisp", name: "Layer - Polyline", icon: "code" },
+            { main: "Revit", id: "revit_all", name: "Tất Cả Revit", icon: "domain" },
+            { main: "Revit", id: "revit_addin", name: "Revit Addin", icon: "extension" },
+            { main: "Revit", id: "revit_dynamo", name: "Revit Dynamo", icon: "account_tree" }
+        ];
+
         let currentCategory = 'all';
 
         // Hiển thị Toast
@@ -421,6 +410,18 @@
         // Khởi tạo và fetch dữ liệu
         async function initApp() {
             try {
+                const catRes = await fetch(`${CATEGORY_RAW_URL}?t=${Date.now()}`);
+                if (catRes.ok) {
+                    const loadedCats = await catRes.json();
+                    if (Array.isArray(loadedCats) && loadedCats.length > 0) {
+                        allCategories = loadedCats;
+                    }
+                }
+            } catch (e) {
+                console.log("Fallback categories as categories.json fetch failed");
+            }
+
+            try {
                 const response = await fetch(`${GITHUB_RAW_URL}?t=${Date.now()}`);
                 if (!response.ok) throw new Error('Not found or fetch error');
                 allTools = await response.json();
@@ -432,7 +433,119 @@
             }
             document.getElementById('loading-state').style.display = 'none';
             document.getElementById('tools-container').classList.remove('hidden');
+
+            renderCategoriesSidebar();
+            renderCategorySelectInputs();
             renderTools();
+        }
+
+        function renderCategoriesSidebar() {
+            const sidebar = document.getElementById('sidebar-categories');
+            let html = `
+                <nav class="space-y-2" id="category-nav">
+                    <a href="#" onclick="filterByCategory('all', this)"
+                        class="category-link flex items-center justify-between px-4 py-3 bg-slate-200 dark:bg-slate-800 border-r-4 border-slate-400 group transition-all mb-4">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-2xl">apps</span>
+                            <span class="font-display text-xs font-bold tracking-widest uppercase">Tất Cả Công Cụ</span>
+                        </div>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-all">0</span>
+                    </a>
+                </nav>
+            `;
+
+            // Group by main folder array
+            const groups = {};
+            allCategories.forEach(c => {
+                if (!groups[c.main]) groups[c.main] = [];
+                groups[c.main].push(c);
+            });
+
+            for (const [main, cats] of Object.entries(groups)) {
+                html += `
+                <h2 class="font-display text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 mt-10 mb-6 flex items-center gap-2">
+                    <span class="w-4 h-[1px] bg-slate-300 dark:bg-slate-700"></span>${main}
+                </h2>
+                <nav class="space-y-2">
+                `;
+                cats.forEach(c => {
+                    html += `
+                    <a href="#" onclick="filterByCategory('${c.id}', this)"
+                        class="category-link flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-white/5 transition-all group">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary">${c.icon}</span>
+                            <span class="font-display text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">${c.name}</span>
+                        </div>
+                        <span class="text-sm font-mono font-bold !text-black dark:!text-white" id="count-${c.id}">0</span>
+                    </a>
+                    `;
+                });
+                html += `</nav>`;
+            }
+            sidebar.innerHTML = html;
+        }
+
+        function renderCategorySelectInputs() {
+            const toolCatSelect = document.getElementById('toolCategory');
+            const mainCatSelect = document.getElementById('catMainFolder');
+
+            const groups = {};
+            allCategories.forEach(c => {
+                if (!groups[c.main]) groups[c.main] = [];
+                groups[c.main].push(c);
+            });
+
+            // For tool submission (Wait, shouldn't we exclude 'revit_all' or placeholder folders?)
+            let toolCatHtml = '';
+            for (const [main, cats] of Object.entries(groups)) {
+                toolCatHtml += `<optgroup label="${main}">`;
+                cats.forEach(c => {
+                    toolCatHtml += `<option value="${c.id}">${c.name}</option>`;
+                });
+                toolCatHtml += `</optgroup>`;
+            }
+            toolCatSelect.innerHTML = toolCatHtml;
+
+            // For category submission
+            let mainFolderHtml = '';
+            for (const main of Object.keys(groups)) {
+                mainFolderHtml += `<option value="${main}">${main}</option>`;
+            }
+            mainFolderHtml += `<option value="NEW_MAIN">+ Thêm thư mục gốc mới...</option>`;
+            mainCatSelect.innerHTML = mainFolderHtml;
+        }
+
+        function toggleNewMainFolder() {
+            const val = document.getElementById('catMainFolder').value;
+            if (val === 'NEW_MAIN') {
+                document.getElementById('customMainFolderContainer').classList.remove('hidden');
+                document.getElementById('catNewMainName').required = true;
+            } else {
+                document.getElementById('customMainFolderContainer').classList.add('hidden');
+                document.getElementById('catNewMainName').required = false;
+            }
+        }
+
+        function showCategoryForm() {
+            document.getElementById('addCategoryModal').classList.remove('hidden');
+            document.getElementById('addCategoryModal').classList.add('flex');
+            setTimeout(() => {
+                document.getElementById('addCategoryModalContainer').classList.remove('scale-95');
+                document.getElementById('addCategoryModalContainer').classList.add('scale-100');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+            if (document.getElementById('catMainFolder').options.length === 0) renderCategorySelectInputs();
+            toggleNewMainFolder();
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('addCategoryModalContainer').classList.remove('scale-100');
+            document.getElementById('addCategoryModalContainer').classList.add('scale-95');
+            setTimeout(() => {
+                document.getElementById('addCategoryModal').classList.add('hidden');
+                document.getElementById('addCategoryModal').classList.remove('flex');
+                document.body.style.overflow = '';
+            }, 300);
         }
 
         // Render danh sách
@@ -452,13 +565,21 @@
             });
 
             // Cập nhật số lượng
-            const revitTools = allTools.filter(t => t.category && t.category.startsWith('revit_'));
-            document.getElementById('count-all').innerText = allTools.filter(t => !t.category || !t.category.startsWith('revit_')).length;
-            document.getElementById('count-cad').innerText = allTools.filter(t => t.category === 'cad' || t.category === 'BLOCK' || t.category === 'BLOCK - LAYOUT').length;
-            document.getElementById('count-lisp').innerText = allTools.filter(t => t.category === 'lisp' || t.category === 'Layer - Polyline').length;
-            document.getElementById('count-revit_all').innerText = revitTools.length;
-            document.getElementById('count-revit_addin').innerText = allTools.filter(t => t.category === 'revit_addin').length;
-            document.getElementById('count-revit_dynamo').innerText = allTools.filter(t => t.category === 'revit_dynamo').length;
+            document.getElementById('count-all').innerText = allTools.length;
+            allCategories.forEach(c => {
+                let count = 0;
+                if (c.id === 'revit_all') {
+                    count = allTools.filter(t => t.category && t.category.startsWith('revit_')).length;
+                } else if (c.id === 'cad') {
+                    count = allTools.filter(t => t.category === 'cad' || t.category === 'BLOCK' || t.category === 'BLOCK - LAYOUT').length;
+                } else if (c.id === 'lisp') {
+                    count = allTools.filter(t => t.category === 'lisp' || t.category === 'Layer - Polyline').length;
+                } else {
+                    count = allTools.filter(t => t.category === c.id).length;
+                }
+                const el = document.getElementById(`count-${c.id}`);
+                if (el) el.innerText = count;
+            });
 
             if (filtered.length === 0) {
                 container.innerHTML = `<div class="col-span-full py-12 text-center text-slate-500 font-display text-sm border border-dashed border-border-light dark:border-border-dark">Không tìm thấy công cụ phù hợp.</div>`;
@@ -473,7 +594,8 @@
                     dateStr = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
                 }
 
-                let catDisplay = (tool.category || 'CAD').toUpperCase().replace('REVIT_', 'REVIT ');
+                let catObj = allCategories.find(c => c.id === tool.category);
+                let catDisplay = catObj ? catObj.name : (tool.category || 'CAD').toUpperCase().replace('REVIT_', 'REVIT ');
                 if (tool.category === 'cad' || tool.category === 'BLOCK' || tool.category === 'BLOCK - LAYOUT') catDisplay = 'BLOCK - LAYOUT';
                 else if (tool.category === 'lisp' || tool.category === 'Layer - Polyline') catDisplay = 'LAYER - POLYLINE';
 
@@ -893,6 +1015,54 @@
 
         // Chạy app
         window.onload = initApp;
+
+        // Logic Add Category API Call
+        document.getElementById('addCategoryForm')?.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmitCategory');
+            const ogHtml = btn.innerHTML;
+            btn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">sync</span> ĐANG TẠO...`;
+            btn.disabled = true;
+
+            const password = document.getElementById('catAdminPwd').value;
+            let main = document.getElementById('catMainFolder').value;
+            if (main === 'NEW_MAIN') main = document.getElementById('catNewMainName').value;
+
+            const name = document.getElementById('catSubName').value;
+            const id = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9\s]/g, "").trim().replace(/\s+/g, '_').toLowerCase() + "_" + Date.now().toString().slice(-4);
+
+            try {
+                const res = await fetch(VERCEL_API_CATEGORY_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password, main, id, name })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Thêm thư mục thất bại (kiểm tra pass)');
+
+                // Update category lists
+                const existsIndex = allCategories.findIndex(c => c.id === data.category.id);
+                if (existsIndex > -1) {
+                    allCategories[existsIndex] = data.category;
+                } else {
+                    allCategories.push(data.category);
+                }
+
+                renderCategoriesSidebar();
+                renderCategorySelectInputs();
+                renderTools(document.getElementById('searchInput').value); // update counts
+
+                showToast("Đã tạo thư mục thành công!", "success");
+                closeCategoryModal();
+                document.getElementById('addCategoryForm').reset();
+                toggleNewMainFolder();
+            } catch (err) {
+                showToast("Lỗi: " + err.message, "error");
+            } finally {
+                btn.innerHTML = ogHtml;
+                btn.disabled = false;
+            }
+        });
 
         // Zalo Modal Logic
         function openZaloPopup() {
