@@ -41,32 +41,6 @@
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
         }
-        function showSubmissionForm() {
-            document.getElementById('main-list').classList.add('hidden');
-            document.getElementById('submission-form').classList.remove('hidden');
-        }
-        function hideSubmissionForm() {
-            document.getElementById('submission-form').classList.add('hidden');
-            document.getElementById('main-list').classList.remove('hidden');
-        }
-
-        function showCategoryForm() {
-            document.getElementById('addCategoryModal').classList.remove('hidden');
-            document.getElementById('addCategoryModal').classList.add('flex');
-            setTimeout(() => {
-                document.getElementById('addCategoryModalContainer').classList.remove('scale-95');
-                document.getElementById('addCategoryModalContainer').classList.add('scale-100');
-            }, 10);
-        }
-
-        function hideCategoryForm() {
-            document.getElementById('addCategoryModalContainer').classList.remove('scale-100');
-            document.getElementById('addCategoryModalContainer').classList.add('scale-95');
-            setTimeout(() => {
-                document.getElementById('addCategoryModal').classList.remove('flex');
-                document.getElementById('addCategoryModal').classList.add('hidden');
-            }, 300);
-        }
     </script>
     <style type="text/tailwindcss">
         @layer base {
@@ -284,70 +258,7 @@
         </form>
     </main>
 
-    <!-- VIEW SOURCE MODAL -->
-    <div id="viewSourceModal"
-        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity duration-300">
-        <div id="viewSourceModalContainer"
-            class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark w-full max-w-4xl h-[90vh] flex flex-col shadow-2xl transform scale-95 transition-all duration-300">
-            <div
-                class="px-6 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-slate-50 dark:bg-black/50">
-                <h3 id="viewSourceTitle"
-                    class="font-display font-bold text-lg uppercase tracking-wider text-slate-800 dark:text-slate-200">
-                    Mã Nguồn Của Tool</h3>
-                <div class="flex items-center gap-3">
-                    <button onclick="copySourceCode()" id="copySourceBtn"
-                        class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-display text-[10px] tracking-widest uppercase transition-colors flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[14px]">content_copy</span>SAO CHÉP</button>
-                    <button onclick="closeSourceModal()"
-                        class="text-slate-500 hover:text-primary transition-colors flex">
-                        <span class="material-symbols-outlined">close</span>
-                    </button>
-                </div>
-            </div>
-            <div class="p-6 overflow-y-auto flex-1 bg-[#0d1117] relative">
-                <div id="viewSourceLoading"
-                    class="absolute inset-0 flex flex-col items-center justify-center bg-[#0d1117] z-10 hidden">
-                    <span class="material-symbols-outlined text-4xl animate-spin text-primary">sync</span>
-                    <p class="mt-4 font-display text-xs tracking-widest uppercase text-slate-400">ĐANG TẢI MÃ NGUỒN...
-                    </p>
-                </div>
-                <pre><code id="viewSourceContent" class="font-display text-xs text-slate-300 leading-relaxed tabular-nums whitespace-pre-wrap"></code></pre>
-            </div>
-        </div>
-    </div>
 
-
-    <!-- VIEW SOURCE MODAL -->
-    <div id="viewSourceModal"
-        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity duration-300">
-        <div id="viewSourceModalContainer"
-            class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark w-full max-w-4xl h-[90vh] flex flex-col shadow-2xl transform scale-95 transition-all duration-300">
-            <div
-                class="px-6 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-slate-50 dark:bg-black/50">
-                <h3 id="viewSourceTitle"
-                    class="font-display font-bold text-lg uppercase tracking-wider text-slate-800 dark:text-slate-200">
-                    Mã Nguồn Của Tool</h3>
-                <div class="flex items-center gap-3">
-                    <button onclick="copySourceCode()" id="copySourceBtn"
-                        class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-display text-[10px] tracking-widest uppercase transition-colors flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[14px]">content_copy</span>SAO CHÉP</button>
-                    <button onclick="closeSourceModal()"
-                        class="text-slate-500 hover:text-primary transition-colors flex">
-                        <span class="material-symbols-outlined">close</span>
-                    </button>
-                </div>
-            </div>
-            <div class="p-6 overflow-y-auto flex-1 bg-[#0d1117] relative">
-                <div id="viewSourceLoading"
-                    class="absolute inset-0 flex flex-col items-center justify-center bg-[#0d1117] z-10 hidden">
-                    <span class="material-symbols-outlined text-4xl animate-spin text-primary">sync</span>
-                    <p class="mt-4 font-display text-xs tracking-widest uppercase text-slate-400">ĐANG TẢI MÃ NGUỒN...
-                    </p>
-                </div>
-                <pre><code id="viewSourceContent" class="font-display text-xs text-slate-300 leading-relaxed tabular-nums whitespace-pre-wrap"></code></pre>
-            </div>
-        </div>
-    </div>
 
     <!-- FOOTER -->
     <footer
@@ -401,6 +312,7 @@
         // Hiển thị Toast
         function showToast(msg, type = 'info') {
             const toast = document.getElementById('toast');
+            if (!toast) return;
             document.getElementById('toast-msg').innerText = msg;
             document.getElementById('toast-icon').innerText = type === 'error' ? 'error' : 'check_circle';
             document.getElementById('toast-icon').className = `material-symbols-outlined ${type === 'error' ? 'text-rose-500' : 'text-emerald-500'}`;
@@ -411,15 +323,19 @@
         // Khởi tạo và fetch dữ liệu
         async function initApp() {
             try {
+                console.log("Fetching categories from:", CATEGORY_RAW_URL);
                 const catRes = await fetch(`${CATEGORY_RAW_URL}?t=${Date.now()}`);
                 if (catRes.ok) {
                     const loadedCats = await catRes.json();
+                    console.log("Loaded categories:", loadedCats);
                     if (Array.isArray(loadedCats) && loadedCats.length > 0) {
                         allCategories = loadedCats;
                     }
+                } else {
+                    console.warn("Failed to fetch categories.json, using defaults.");
                 }
             } catch (e) {
-                console.log("Fallback categories as categories.json fetch failed");
+                console.error("Error fetching categories:", e);
             }
 
             try {
@@ -443,6 +359,7 @@
                 const local = localStorage.getItem('lisp_db');
                 if (local) allTools = JSON.parse(local);
             }
+
             document.getElementById('loading-state').style.display = 'none';
             document.getElementById('tools-container').classList.remove('hidden');
 
@@ -1056,8 +973,15 @@
         }
 
 
-        // Chạy app
-        window.onload = initApp;
+        // App state
+        function showSubmissionForm() {
+            document.getElementById('main-list').classList.add('hidden');
+            document.getElementById('submission-form').classList.remove('hidden');
+        }
+        function hideSubmissionForm() {
+            document.getElementById('submission-form').classList.add('hidden');
+            document.getElementById('main-list').classList.remove('hidden');
+        }
 
         // Logic Switch Tab Category
         function switchCategoryTab(tab) {
@@ -1431,37 +1355,7 @@
             </div>
         </div>
     </div>
-    <!-- VIEW SOURCE MODAL -->
-    <div id="viewSourceModal"
-        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity duration-300">
-        <div id="viewSourceModalContainer"
-            class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark w-full max-w-4xl h-[90vh] flex flex-col shadow-2xl transform scale-95 transition-all duration-300">
-            <div
-                class="px-6 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-slate-50 dark:bg-black/50">
-                <h3 id="viewSourceTitle"
-                    class="font-display font-bold text-lg uppercase tracking-wider text-slate-800 dark:text-slate-200">
-                    Mã Nguồn Của Tool</h3>
-                <div class="flex items-center gap-3">
-                    <button onclick="copySourceCode()" id="copySourceBtn"
-                        class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-display text-[10px] tracking-widest uppercase transition-colors flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[14px]">content_copy</span>SAO CHÉP</button>
-                    <button onclick="closeSourceModal()"
-                        class="text-slate-500 hover:text-primary transition-colors flex">
-                        <span class="material-symbols-outlined">close</span>
-                    </button>
-                </div>
-            </div>
-            <div class="p-6 overflow-y-auto flex-1 bg-[#0d1117] relative">
-                <div id="viewSourceLoading"
-                    class="absolute inset-0 flex flex-col items-center justify-center bg-[#0d1117] z-10 hidden">
-                    <span class="material-symbols-outlined text-4xl animate-spin text-primary">sync</span>
-                    <p class="mt-4 font-display text-xs tracking-widest uppercase text-slate-400">ĐANG TẢI MÃ NGUỒN...
-                    </p>
-                </div>
-                <pre><code id="viewSourceContent" class="font-display text-xs text-slate-300 leading-relaxed tabular-nums whitespace-pre-wrap"></code></pre>
-            </div>
-        </div>
-    </div>
+
 
 
     <!-- ADD CATEGORY MODAL -->
