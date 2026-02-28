@@ -29,9 +29,8 @@ module.exports = async (req, res) => {
     }
 
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-    const owner = process.env.GITHUB_OWNER || "sonhpa";
+    const owner = process.env.GITHUB_OWNER || "sonho0310";
     const repo = process.env.GITHUB_REPO || "lispcad-data";
-    const dbPath = 'database.json';
 
     if (!process.env.GITHUB_TOKEN) {
       return res.status(500).json({ error: 'Chưa cấu hình GITHUB_TOKEN trên Vercel' });
@@ -63,7 +62,21 @@ module.exports = async (req, res) => {
 
     const directDownloadUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${lspFilePath}`;
 
-    // 2. Lấy nội dung file database.json hiện tại
+    // 2. Xác định file database_[main].json từ categories.json
+    let dbPath = 'database_autocad.json'; // Tùy chọn mặc định
+    try {
+      const { data: catData } = await octokit.repos.getContent({ owner, repo, path: 'categories.json' });
+      const categories = JSON.parse(Buffer.from(catData.content, 'base64').toString('utf-8'));
+      const catObj = categories.find(c => c.id === category);
+      if (catObj && catObj.main) {
+        const safeMain = catObj.main.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+        dbPath = `database_${safeMain}.json`;
+      }
+    } catch (err) {
+      console.error("Lỗi khi đọc categories.json:", err);
+    }
+
+    // 3. Lấy nội dung file database_[main].json hiện tại
     let dbFile;
     let currentData = [];
     try {
@@ -82,7 +95,7 @@ module.exports = async (req, res) => {
       }
     }
 
-    // 3. Thêm Tool mới vào danh sách (Sử dụng URL trực tiếp từ bước 1)
+    // 4. Thêm Tool mới vào danh sách (Sử dụng URL trực tiếp từ bước 1)
     const newTool = {
       id: id || Date.now().toString(),
       category: category || 'cad',
@@ -96,7 +109,7 @@ module.exports = async (req, res) => {
 
     currentData.push(newTool);
 
-    // 4. Mã hóa lại thành Base64 và Upload đè database.json
+    // 5. Mã hóa lại thành Base64 và Upload đè database_[main].json
     const updatedContentBase64 = Buffer.from(JSON.stringify(currentData, null, 2)).toString('base64');
 
     await octokit.repos.createOrUpdateFileContents({
