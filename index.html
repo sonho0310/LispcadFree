@@ -94,9 +94,6 @@
                 <button class="p-2 text-slate-400 hover:text-primary transition-colors" onclick="toggleDarkMode()">
                     <span class="material-symbols-outlined text-xl">contrast</span>
                 </button>
-                <button onclick="showCategoryForm()" id="btn-submit-category"
-                    class="bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-6 py-2 text-[11px] font-display font-bold uppercase tracking-widest hover:bg-slate-300 dark:hover:bg-slate-700 transition-all shadow-sm">THÊM
-                    THƯ MỤC</button>
                 <button onclick="showSubmissionForm()" id="btn-submit-tool"
                     class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2 text-[11px] font-display font-bold uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 dark:hover:text-slate-900 transition-all shadow-sm">THÊM
                     TOOL</button>
@@ -170,7 +167,7 @@
                     <span class="font-display text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1">01</span>
                     <h2 class="font-display font-bold uppercase tracking-widest text-sm">Thông tin chung</h2>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
                         <label
                             class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Tên
@@ -179,24 +176,19 @@
                             class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
                             placeholder="VD: TL - Tổng chiều dài" type="text" />
                     </div>
+                    
                     <div class="space-y-2">
-                        <label
-                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Danh
-                            Mục</label>
+                        <label class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Danh Mục</label>
                         <select id="toolCategory"
                             class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary">
                             <!-- Populated dynamically -->
                         </select>
                     </div>
                     <div class="space-y-2">
-                        <label
-                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Tác
-                            giả</label>
-                        <input id="toolAuthor"
-                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
-                            placeholder="Tên tác giả..." type="text" />
+                        <label class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Tác giả</label>
+                        <input id="toolAuthor" class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary" placeholder="Nhập tên tác giả..." type="text" />
                     </div>
-                    <div class="md:col-span-3 space-y-2">
+                    <div class="md:col-span-2 space-y-2">
                         <label
                             class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Mô
                             tả kỹ thuật *</label>
@@ -204,7 +196,7 @@
                             class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary resize-none"
                             placeholder="Mô tả chi tiết những gì lisp này thực hiện..." rows="2"></textarea>
                     </div>
-                    <div class="md:col-span-3 space-y-2">
+                    <div class="md:col-span-2 space-y-2">
                         <label
                             class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Hướng
                             dẫn sử dụng</label>
@@ -293,99 +285,6 @@
                     </p>
                 </div>
                 <pre><code id="viewSourceContent" class="font-display text-xs text-slate-300 leading-relaxed tabular-nums whitespace-pre-wrap"></code></pre>
-            </div>
-        </div>
-    </div>
-
-    <!-- ADD CATEGORY MODAL -->
-    <div id="addCategoryModal"
-        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity duration-300">
-        <div id="addCategoryModalContainer"
-            class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark w-full max-w-md h-auto flex flex-col shadow-2xl transform scale-95 transition-all duration-300">
-            <div
-                class="px-6 py-4 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-slate-50 dark:bg-black/50">
-                <h3 class="font-display font-bold text-lg uppercase tracking-wider text-slate-800 dark:text-slate-200">
-                    Danh Mục</h3>
-                <button onclick="closeCategoryModal()" class="text-slate-500 hover:text-primary transition-colors flex">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-
-            <!-- TABS -->
-            <div class="flex border-b border-border-light dark:border-border-dark bg-slate-50 dark:bg-black/30">
-                <button onclick="switchCategoryTab('add')" id="tabBtn-add"
-                    class="flex-1 py-3 text-xs font-display font-bold tracking-widest uppercase transition-colors text-primary border-b-2 border-primary bg-white dark:bg-black">Thêm
-                    Mới</button>
-                <button onclick="switchCategoryTab('manage')" id="tabBtn-manage"
-                    class="flex-1 py-3 text-xs font-display font-bold tracking-widest uppercase transition-colors text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border-b-2 border-transparent">Quản
-                    Lý</button>
-            </div>
-
-            <!-- TAB ADD -->
-            <div class="p-6 block" id="tabContent-add">
-                <form id="addCategoryForm" class="space-y-4">
-                    <div class="space-y-2">
-                        <label
-                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Mật
-                            khẩu *</label>
-                        <input required id="catAdminPwdAdd" type="password"
-                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
-                            placeholder="Hãy nhập mật khẩu..." />
-                    </div>
-                    <div class="space-y-2">
-                        <label
-                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Thư
-                            mục gốc *</label>
-                        <select id="catMainFolder" onchange="toggleNewMainFolder()"
-                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary">
-                            <!-- Populated dynamically -->
-                            <option value="NEW_MAIN">+ Thêm thư mục gốc mới...</option>
-                        </select>
-                    </div>
-                    <div class="space-y-2 hidden" id="customMainFolderContainer">
-                        <label
-                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Tên
-                            thư mục gốc mới *</label>
-                        <input id="catNewMainName"
-                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
-                            placeholder="VD: Photoshop" type="text" />
-                    </div>
-                    <div class="space-y-2">
-                        <label
-                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Tên
-                            thư mục con (Subfolder) *</label>
-                        <input required id="catSubName"
-                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
-                            placeholder="VD: Scripts Mới" type="text" />
-                    </div>
-                    <div class="pt-4">
-                        <button id="btnSubmitCategory" type="submit"
-                            class="w-full bg-primary text-white font-display font-bold text-sm py-4 tracking-[0.2em] uppercase hover:bg-rose-700 transition-colors flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-base">create_new_folder</span> TẠO THƯ MỤC
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- TAB MANAGE -->
-            <div class="hidden flex-col h-[450px]" id="tabContent-manage">
-                <div class="p-4 border-b border-border-light dark:border-border-dark bg-slate-50 dark:bg-black/30">
-                    <label
-                        class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500 mb-2">Mật
-                        khẩu xác nhận *</label>
-                    <div class="flex gap-2">
-                        <input id="catAdminPwdManage" type="password"
-                            class="w-full bg-white dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-2 focus:outline-none focus:border-primary"
-                            placeholder="Nhập để xoá/lưu..." />
-                        <button onclick="saveCategoryOrder()" id="btnSaveOrder"
-                            class="bg-primary text-white px-4 text-xs font-bold uppercase tracking-wider hover:bg-rose-700 transition flex items-center gap-1 whitespace-nowrap">
-                            <span class="material-symbols-outlined text-sm">save</span> LƯU
-                        </button>
-                    </div>
-                </div>
-                <div class="p-4 overflow-y-auto flex-1 bg-slate-100/50 dark:bg-black/20" id="categoryManageList">
-                    <!-- Populated dynamically -->
-                </div>
             </div>
         </div>
     </div>
