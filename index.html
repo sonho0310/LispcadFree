@@ -732,13 +732,15 @@
                         }
 
                         // Native Windows File Save Dialog via showSaveFilePicker API
+                        const extMatch = baseUrl.match(/\.[0-9a-z]+$/i);
+                        const ext = extMatch ? extMatch[0] : '.lsp';
                         if (window.showSaveFilePicker) {
                             try {
                                 const handle = await window.showSaveFilePicker({
-                                    suggestedName: title + '.lsp',
+                                    suggestedName: title + ext,
                                     types: [{
-                                        description: 'Lisp File',
-                                        accept: { 'text/plain': ['.lsp'] },
+                                        description: 'Script File',
+                                        accept: { 'application/octet-stream': [ext] },
                                     }],
                                 });
                                 const writable = await handle.createWritable();
@@ -750,12 +752,12 @@
                             }
                         } else {
                             // Fallback automatically save to default Downloads folder
-                            const blob = new Blob([text], { type: 'text/plain' });
+                            const blob = new Blob([text], { type: 'application/octet-stream' });
                             const blobUrl = URL.createObjectURL(blob);
                             const a = document.createElement('a');
                             a.href = blobUrl;
                             a.target = '_blank';
-                            a.download = title + '.lsp';
+                            a.download = title + ext;
                             document.body.appendChild(a);
                             a.click();
                             document.body.removeChild(a);
@@ -1399,7 +1401,7 @@
     </div>
 
 
-<!-- ADD CATEGORY MODAL -->
+    <!-- ADD CATEGORY MODAL -->
     <div id="addCategoryModal"
         class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity duration-300">
         <div id="addCategoryModalContainer"
