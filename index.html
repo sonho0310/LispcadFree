@@ -243,7 +243,7 @@
                     <span class="font-display text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1">01</span>
                     <h2 class="font-display font-bold uppercase tracking-widest text-sm">Thông tin chung</h2>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="space-y-2">
                         <label
                             class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Tên
@@ -268,7 +268,15 @@
                             </optgroup>
                         </select>
                     </div>
-                    <div class="md:col-span-2 space-y-2">
+                    <div class="space-y-2">
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Tác
+                            giả</label>
+                        <input id="toolAuthor"
+                            class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary"
+                            placeholder="Tên tác giả..." type="text" />
+                    </div>
+                    <div class="md:col-span-3 space-y-2">
                         <label
                             class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Mô
                             tả kỹ thuật *</label>
@@ -276,7 +284,7 @@
                             class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary resize-none"
                             placeholder="Mô tả chi tiết những gì lisp này thực hiện..." rows="2"></textarea>
                     </div>
-                    <div class="md:col-span-2 space-y-2">
+                    <div class="md:col-span-3 space-y-2">
                         <label
                             class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Hướng
                             dẫn sử dụng</label>
@@ -471,9 +479,10 @@
               <div>
                 <h3 class="font-display font-bold text-lg tracking-tight group-hover:text-primary transition-colors uppercase">${tool.title.replace(/'/g, "\\'")}</h3>
                 <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">${tool.desc}</p>
-                <div class="flex gap-2 mt-3">
-                  <span class="text-[9px] px-2 py-0.5 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400">#${(tool.category || 'CAD').toUpperCase()}</span>
+                <div class="flex flex-wrap gap-2 mt-3">
+                  <span class="text-[9px] px-2 py-0.5 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">category</span> ${(tool.category || 'CAD').toUpperCase().replace('REVIT_', 'REVIT ')}</span>
                   <span class="text-[9px] px-2 py-0.5 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">history</span> ${dateStr}</span>
+                  <span class="text-[9px] px-2 py-0.5 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">person</span> ${tool.author || 'Sưu Tầm'}</span>
                 </div>
               </div>
             </div>
@@ -718,6 +727,7 @@
             const newTool = {
                 title: document.getElementById('toolTitle').value,
                 category: document.getElementById('toolCategory').value,
+                author: document.getElementById('toolAuthor').value || 'Sưu tầm',
                 desc: document.getElementById('toolDesc').value,
                 guide: document.getElementById('toolGuide').value,
                 toolCode: document.getElementById('toolCode').value,
