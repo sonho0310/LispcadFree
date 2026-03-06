@@ -88,7 +88,12 @@ module.exports = async (req, res) => {
       dbFile = data;
       // Decode Base64 thành chuỗi JSON
       const contentStr = Buffer.from(dbFile.content, 'base64').toString('utf-8');
-      currentData = JSON.parse(contentStr);
+      try {
+        currentData = JSON.parse(contentStr);
+      } catch (jsonErr) {
+        const fixedStr = contentStr.replace(/,\s*([\]}])/g, '$1');
+        currentData = JSON.parse(fixedStr);
+      }
     } catch (err) {
       if (err.status !== 404) {
         throw err;
