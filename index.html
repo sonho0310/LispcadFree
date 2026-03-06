@@ -205,6 +205,33 @@
                             class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary resize-none"
                             placeholder="Lệnh chạy, phím tắt, ghi chú cách dùng..." rows="2"></textarea>
                     </div>
+                    <div
+                        class="md:col-span-2 space-y-2 mt-4 pt-4 border-t border-border-light dark:border-border-dark border-dashed">
+                        <label
+                            class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500 text-primary">Chia
+                            Sẻ Trả Phí / Cấp Quyền Riêng (Tùy Chọn)</label>
+                        <select id="toolType" onchange="togglePremiumFields()"
+                            class="w-full lg:w-1/2 bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary text-slate-700 dark:text-slate-300">
+                            <option value="free">Cộng Đồng (Tải xuống Miễn Phí trực tiếp)</option>
+                            <option value="premium">Bản Quyền / Cá Nhân (Yêu cầu Mật khẩu khi tải)</option>
+                        </select>
+                    </div>
+                    <div id="premiumFields" class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
+                        <div class="space-y-2">
+                            <label
+                                class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Số
+                                Zalo / Liên Hệ lấy Pass</label>
+                            <input id="toolZalo" type="text" placeholder="VD: 0987.654.321 Zalo Long..."
+                                class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary" />
+                        </div>
+                        <div class="space-y-2">
+                            <label
+                                class="block text-[10px] font-display uppercase font-bold tracking-wider text-slate-500">Mật
+                                khẩu tải File</label>
+                            <input id="toolPassword" type="password" placeholder="Pass khóa file script..."
+                                class="w-full bg-slate-50 dark:bg-black border border-border-light dark:border-border-dark font-display text-sm p-3 focus:outline-none focus:border-primary" />
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -317,6 +344,16 @@
             document.getElementById('toast-icon').className = `material-symbols-outlined ${type === 'error' ? 'text-rose-500' : 'text-emerald-500'}`;
             toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 4000);
+        }
+
+        function togglePremiumFields() {
+            const isPremium = document.getElementById('toolType').value === 'premium';
+            const container = document.getElementById('premiumFields');
+            if (isPremium) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
         }
 
         // Khởi tạo và fetch dữ liệu
@@ -542,6 +579,9 @@
                 <h3 class="font-display font-bold text-lg tracking-tight group-hover:text-primary transition-colors uppercase">${tool.title.replace(/'/g, "\\'")}</h3>
                 <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">${tool.desc}</p>
                 <div class="flex flex-wrap gap-2 mt-3">
+                  ${tool.isPremium
+                        ? `<span class="text-[11px] px-2 py-1 bg-amber-500 text-white font-display font-bold uppercase flex items-center gap-1 shadow-sm"><span class="material-symbols-outlined text-[13px]">lock</span> BẢN QUYỀN</span>`
+                        : `<span class="text-[11px] px-2 py-1 bg-emerald-500 text-white font-display font-bold uppercase flex items-center gap-1 shadow-sm"><span class="material-symbols-outlined text-[13px]">public</span> MIỄN PHÍ</span>`}
                   <span class="text-[11px] px-2 py-1 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400 flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">category</span> ${catDisplay}</span>
                   <span class="text-[11px] px-2 py-1 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400 flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">history</span> ${dateStr}</span>
                   <span class="text-[11px] px-2 py-1 border border-slate-200 dark:border-slate-800 font-mono uppercase text-slate-400 flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">person</span> ${tool.author || 'Sưu Tầm'}</span>
@@ -555,7 +595,7 @@
               <button onclick="openSourceModal('${tool.filename}', '${tool.title.replace(/'/g, "\\'")}')" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center justify-center gap-1">
                 <span class="material-symbols-outlined text-sm">code</span> XEM MÃ NGUỒN
               </button>
-              <button onclick="downloadTool(event, '${tool.filename}', '${tool.title.replace(/'/g, "\\'")}')" class="flex-1 px-5 py-3 sm:py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-display font-bold text-[10px] uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 dark:hover:text-slate-900 transition-colors flex items-center justify-center gap-2">
+              <button onclick="downloadTool(event, '${tool.id || tool.title.replace(/'/g, "\\'")}')" class="flex-1 px-5 py-3 sm:py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-display font-bold text-[10px] uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 dark:hover:text-slate-900 transition-colors flex items-center justify-center gap-2">
                 <span class="material-symbols-outlined text-sm">download</span> TẢI VỀ
               </button>
               <button onclick="deleteTool(event, '${tool.id || tool.title.replace(/'/g, "\\'")}', '${tool.category}')" class="px-4 py-3 sm:py-2 bg-rose-500/10 text-rose-500 border border-transparent hover:border-rose-500 font-display font-bold text-[10px] uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-colors flex items-center justify-center gap-1" title="Xóa Tool">
@@ -584,8 +624,26 @@
         }
 
         // Tải File lisp tự động
-        async function downloadTool(event, url, title) {
-            if (url.startsWith('http')) {
+        async function downloadTool(event, toolId) {
+            const tool = allTools.find(t => String(t.id) === String(toolId) || t.title === toolId);
+            if (!tool) {
+                showToast("Lỗi: Không tìm thấy tool", "error");
+                return;
+            }
+
+            if (tool.isPremium) {
+                const pass = prompt(`Công cụ này Yêu cầu Mật khẩu.\nVui lòng liên hệ Tác giả qua Zalo: ${tool.zalo || 'Không rỏ'} để lấy Pass.\n\nNhập Mật khẩu để tải xuống:`);
+                if (pass === null) return; // User cancelled
+                if (pass !== tool.password) {
+                    showToast("Mật khẩu không đúng!", "error");
+                    return;
+                }
+            }
+
+            const url = tool.filename;
+            const title = tool.title;
+
+            if (url && url.startsWith('http')) {
                 const btn = event.currentTarget;
                 const ogHtml = btn.innerHTML;
                 try {
@@ -829,6 +887,7 @@
             btn.innerHTML = `<span class="material-symbols-outlined text-lg animate-spin">sync</span> <span>UPLOADING TO GITHUB...</span>`;
             btn.disabled = true;
 
+            const isPremium = document.getElementById('toolType').value === 'premium';
             const newTool = {
                 title: document.getElementById('toolTitle').value,
                 category: document.getElementById('toolCategory').value,
@@ -837,7 +896,10 @@
                 guide: document.getElementById('toolGuide').value,
                 toolCode: document.getElementById('toolCode').value,
                 isZip: window.isZipUpload === true,
-                fileExtension: window.fileExtension || '.lsp'
+                fileExtension: window.fileExtension || '.lsp',
+                isPremium: isPremium,
+                zalo: isPremium ? document.getElementById('toolZalo').value : '',
+                password: isPremium ? document.getElementById('toolPassword').value : ''
             };
             window.isZipUpload = false;
 
