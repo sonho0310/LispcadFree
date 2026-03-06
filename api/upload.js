@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { id, category, title, desc, toolCode, guide, author, fileExtension } = req.body;
+    const { id, category, title, desc, toolCode, guide, author, fileExtension, isPremium, zalo, password } = req.body;
 
     // Check mandatory fields
     if (!title || !desc || !toolCode) {
@@ -109,6 +109,9 @@ module.exports = async (req, res) => {
       desc: desc.trim(),
       filename: directDownloadUrl, // Dùng GitHub URL thay vì Link tải
       guide: guide ? guide.trim() : '',
+      isPremium: isPremium || false,
+      zalo: zalo ? zalo.trim() : '',
+      password: password ? password.trim() : '',
       createdAt: new Date().toISOString()
     };
 
