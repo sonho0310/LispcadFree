@@ -286,10 +286,8 @@
         const VERCEL_API_CATEGORY_URL = "https://lispcad-free.vercel.app/api/category";
         const VERCEL_API_MANAGE_CATEGORY_URL = "https://lispcad-free.vercel.app/api/manage-category";
         const VERCEL_API_DELETE_TOOL_URL = "https://lispcad-free.vercel.app/api/delete-tool";
+        const VERCEL_API_GET_DATABASE_URL = "https://lispcad-free.vercel.app/api/get-database";
         const GITHUB_OWNER = "sonho0310";
-        const GITHUB_REPO = "lispcad-data";
-        const GITHUB_RAW_BASE_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/`;
-        const CATEGORY_RAW_URL = `${GITHUB_RAW_BASE_URL}categories.json`;
 
         let allTools = [];
         let globalAdminPassword = null;
@@ -324,37 +322,19 @@
         // Khởi tạo và fetch dữ liệu
         async function initApp() {
             try {
-                console.log("Fetching categories from:", CATEGORY_RAW_URL);
-                const catRes = await fetch(`${CATEGORY_RAW_URL}?t=${Date.now()}`);
-                if (catRes.ok) {
-                    const loadedCats = await catRes.json();
-                    console.log("Loaded categories:", loadedCats);
-                    if (Array.isArray(loadedCats) && loadedCats.length > 0) {
-                        allCategories = loadedCats;
+                console.log("Fetching live database from Vercel API...");
+                const res = await fetch(`${VERCEL_API_GET_DATABASE_URL}?t=${Date.now()}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.categories && data.categories.length > 0) {
+                        allCategories = data.categories;
+                    }
+                    if (data.tools && data.tools.length > 0) {
+                        allTools = data.tools;
                     }
                 } else {
-                    console.warn("Failed to fetch categories.json, using defaults.");
+                    throw new Error("API returns not ok");
                 }
-            } catch (e) {
-                console.error("Error fetching categories:", e);
-            }
-
-            try {
-                // Get unique safe names for main categories
-                const mains = [...new Set(allCategories.map(c => {
-                    return c.main.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase() || 'autocad';
-                }))];
-                if (mains.length === 0) mains.push('autocad');
-
-                // Fetch all database files simultaneously
-                const fetchPromises = mains.map(main =>
-                    fetch(`${GITHUB_RAW_BASE_URL}database_${main}.json?t=${Date.now()}`)
-                        .then(res => res.ok ? res.json() : [])
-                        .catch(() => [])
-                );
-
-                const results = await Promise.all(fetchPromises);
-                allTools = results.flat();
             } catch (e) {
                 console.log("Fallback to LocalStorage due to fetch error:", e);
                 const local = localStorage.getItem('lisp_db');
@@ -717,8 +697,8 @@
                 const success = await loginAdmin();
                 if (!success) return;
             }
-            if(!confirm("Bạn có chắc chắn muốn xóa công cụ này trên GitHub không?")) return;
-            
+            if (!confirm("Bạn có chắc chắn muốn xóa công cụ này trên GitHub không?")) return;
+
             const ogHtml = btn.innerHTML;
             btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span>';
             btn.disabled = true;
@@ -737,11 +717,11 @@
                 if (!res.ok) throw new Error(data.error || 'Xóa thất bại');
 
                 showToast("Đã xóa công cụ thành công!", "success");
-                
+
                 // Update local list
                 allTools = allTools.filter(t => String(t.id) !== String(id) && t.title !== id);
                 renderTools(document.getElementById('searchInput').value);
-                
+
             } catch (e) {
                 showToast("Lỗi xóa tool: " + e.message, "error");
                 btn.innerHTML = ogHtml;
