@@ -589,13 +589,13 @@
               </div>
             </div>
             <div class="flex gap-3 sm:flex-col lg:flex-row flex-shrink-0 w-full sm:w-auto">
-              <button onclick="openGuideModal('${tool.title.replace(/'/g, "\\'")}', '${encodeURIComponent(tool.guide || '')}')" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
+              <button onclick="handleToolAction(event, '${tool.id || tool.title.replace(/'/g, "\\'")}', 'guide')" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
                 HƯỚNG DẪN
               </button>
-              <button onclick="openSourceModal('${tool.filename}', '${tool.title.replace(/'/g, "\\'")}')" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center justify-center gap-1">
+              <button onclick="handleToolAction(event, '${tool.id || tool.title.replace(/'/g, "\\'")}', 'source')" class="flex-1 px-4 py-3 sm:py-2 border border-border-light dark:border-border-dark text-slate-600 dark:text-slate-300 font-display font-bold text-[10px] uppercase tracking-widest hover:border-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center justify-center gap-1">
                 <span class="material-symbols-outlined text-sm">code</span> XEM MÃ NGUỒN
               </button>
-              <button onclick="downloadTool(event, '${tool.id || tool.title.replace(/'/g, "\\'")}')" class="flex-1 px-5 py-3 sm:py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-display font-bold text-[10px] uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 dark:hover:text-slate-900 transition-colors flex items-center justify-center gap-2">
+              <button onclick="handleToolAction(event, '${tool.id || tool.title.replace(/'/g, "\\'")}', 'download')" class="flex-1 px-5 py-3 sm:py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-display font-bold text-[10px] uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 dark:hover:text-slate-900 transition-colors flex items-center justify-center gap-2">
                 <span class="material-symbols-outlined text-sm">download</span> TẢI VỀ
               </button>
               <button onclick="deleteTool(event, '${tool.id || tool.title.replace(/'/g, "\\'")}', '${tool.category}')" class="px-4 py-3 sm:py-2 bg-rose-500/10 text-rose-500 border border-transparent hover:border-rose-500 font-display font-bold text-[10px] uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-colors flex items-center justify-center gap-1" title="Xóa Tool">
@@ -625,6 +625,7 @@
 
         let currentPremiumTool = null;
         let currentPremiumBtn = null;
+        let currentPremiumAction = null;
 
         function closePremiumModal() {
             document.getElementById('premiumDownloadModalContainer').classList.remove('scale-100');
@@ -635,6 +636,7 @@
             }, 300);
             currentPremiumTool = null;
             currentPremiumBtn = null;
+            currentPremiumAction = null;
         }
 
         function copyZalo() {
@@ -661,12 +663,13 @@
 
             const toolToDownload = currentPremiumTool;
             const btnToUse = currentPremiumBtn;
+            const actionToUse = currentPremiumAction;
             closePremiumModal();
-            executeDownload(btnToUse, toolToDownload);
+            executeAction(btnToUse, toolToDownload, actionToUse);
         }
 
-        // Tải File lisp tự động
-        async function downloadTool(event, toolId) {
+        // Xử lý chung các thao tác Tải, Guide, Source
+        async function handleToolAction(event, toolId, actionType) {
             const tool = allTools.find(t => String(t.id) === String(toolId) || t.title === toolId);
             if (!tool) {
                 showToast("Lỗi: Không tìm thấy tool", "error");
@@ -678,7 +681,14 @@
             if (tool.isPremium) {
                 currentPremiumTool = tool;
                 currentPremiumBtn = btn;
+                currentPremiumAction = actionType;
+
+                let actionText = "XÁC NHẬN TẢI VỀ";
+                if (actionType === 'guide') actionText = "MỞ KHÓA HƯỚNG DẪN";
+                if (actionType === 'source') actionText = "MỞ KHÓA MÃ NGUỒN";
+
                 document.getElementById('premiumZaloNumber').innerText = tool.zalo || 'Không rỏ';
+                document.getElementById('premiumModalActionText').innerText = actionText;
                 document.getElementById('premiumDownloadPassword').value = '';
 
                 const modal = document.getElementById('premiumDownloadModal');
@@ -693,6 +703,19 @@
                 return;
             }
 
+            executeAction(btn, tool, actionType);
+        }
+
+        async function executeAction(btn, tool, actionType) {
+            if (actionType === 'guide') {
+                openGuideModal(tool.title.replace(/'/g, "\\'"), encodeURIComponent(tool.guide || ''));
+                return;
+            } else if (actionType === 'source') {
+                openSourceModal(tool.filename, tool.title.replace(/'/g, "\\'"));
+                return;
+            }
+
+            // Nếu không phải là guide/source thì sẽ chạy download
             executeDownload(btn, tool);
         }
 
