@@ -57,7 +57,12 @@ module.exports = async (req, res) => {
             const { data } = await octokit.repos.getContent({ owner, repo, path: dbPath });
             toolsFile = data;
             const contentStr = Buffer.from(toolsFile.content, 'base64').toString('utf-8');
-            currentTools = JSON.parse(contentStr);
+            try {
+                currentTools = JSON.parse(contentStr);
+            } catch (jsonErr) {
+                const fixedStr = contentStr.replace(/,\s*([\]}])/g, '$1');
+                currentTools = JSON.parse(fixedStr);
+            }
         } catch (err) {
             if (err.status !== 404) throw err;
             return res.status(404).json({ error: 'Không tìm thấy database file' });
