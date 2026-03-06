@@ -285,6 +285,7 @@
         const VERCEL_API_URL = "https://lispcad-free.vercel.app/api/upload";
         const VERCEL_API_CATEGORY_URL = "https://lispcad-free.vercel.app/api/category";
         const VERCEL_API_MANAGE_CATEGORY_URL = "https://lispcad-free.vercel.app/api/manage-category";
+        const VERCEL_API_DELETE_TOOL_URL = "https://lispcad-free.vercel.app/api/delete-tool";
         const GITHUB_OWNER = "sonho0310";
         const GITHUB_REPO = "lispcad-data";
         const GITHUB_RAW_BASE_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/`;
@@ -577,6 +578,9 @@
               <button onclick="downloadTool(event, '${tool.filename}', '${tool.title.replace(/'/g, "\\'")}')" class="flex-1 px-5 py-3 sm:py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-display font-bold text-[10px] uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 dark:hover:text-slate-900 transition-colors flex items-center justify-center gap-2">
                 <span class="material-symbols-outlined text-sm">download</span> TẢI VỀ
               </button>
+              <button onclick="deleteTool(event, '${tool.id || tool.title.replace(/'/g, "\\'")}', '${tool.category}')" class="px-4 py-3 sm:py-2 bg-rose-500/10 text-rose-500 border border-transparent hover:border-rose-500 font-display font-bold text-[10px] uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-colors flex items-center justify-center gap-1" title="Xóa Tool">
+                <span class="material-symbols-outlined text-sm">delete</span>
+              </button>
             </div>
           </div>
         `;
@@ -704,6 +708,44 @@
                 }
             } else {
                 showToast("Link tải về không hợp lệ", "error");
+            }
+        }
+
+        async function deleteTool(event, id, category) {
+            const btn = event.currentTarget;
+            if (!globalAdminPassword) {
+                const success = await loginAdmin();
+                if (!success) return;
+            }
+            if(!confirm("Bạn có chắc chắn muốn xóa công cụ này trên GitHub không?")) return;
+            
+            const ogHtml = btn.innerHTML;
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span>';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(VERCEL_API_DELETE_TOOL_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        password: globalAdminPassword,
+                        tool_id: id,
+                        tool_category: category
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Xóa thất bại');
+
+                showToast("Đã xóa công cụ thành công!", "success");
+                
+                // Update local list
+                allTools = allTools.filter(t => String(t.id) !== String(id) && t.title !== id);
+                renderTools(document.getElementById('searchInput').value);
+                
+            } catch (e) {
+                showToast("Lỗi xóa tool: " + e.message, "error");
+                btn.innerHTML = ogHtml;
+                btn.disabled = false;
             }
         }
 
